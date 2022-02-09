@@ -8,11 +8,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class shooterMotorsOn extends CommandBase {
+public class ShooterMotorsOn extends CommandBase {
   /** Creates a new shooterMotorsOn. */
   private double bottom, top, conveyor;
   private final ShooterSubsystem shooterSubsystem;
-  public shooterMotorsOn(ShooterSubsystem shooterSubsystem, double conveyor, double top, double bottom) {
+  
+  public ShooterMotorsOn(ShooterSubsystem shooterSubsystem, double conveyor, double top, double bottom) {
     this.shooterSubsystem = shooterSubsystem;
     this.top = top;
     this.bottom = bottom;
