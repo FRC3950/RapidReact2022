@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.teleop.*;
-import frc.robot.misc.shooterMotorsOn;
+import frc.robot.misc.ShooterMotorsOn;
 import frc.robot.commands.auto.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.*;
@@ -26,7 +26,7 @@ public class RobotContainer {
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   //Commands:
-  private final shooterMotorsOn shooterMotorsOn = new shooterMotorsOn(shooterSubsystem, .8, 11000, 10500);
+  private final ShooterMotorsOn shooterMotorsOn = new ShooterMotorsOn(shooterSubsystem, .8, 11000, 10500);
 
   //Command groups:
   private final DriveSequence autoDriveSequence = new DriveSequence(drivetrain);
@@ -42,7 +42,7 @@ public class RobotContainer {
 
     //Default Commands:
     drivetrain.setDefaultCommand(
-      new DefaultDriveCommand(xboxController::getRightX, xboxController::getRightX, drivetrain)
+      new DefaultDriveCommand(xboxController::getLeftY, xboxController::getRightX, drivetrain)
     );
   }
   
