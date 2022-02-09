@@ -6,7 +6,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.teleop.*;
+import frc.robot.misc.shooterMotorsOn;
 import frc.robot.commands.auto.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.*;
@@ -21,6 +23,10 @@ public class RobotContainer {
 
   //Subsystems:
   private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+
+  //Commands:
+  private final shooterMotorsOn shooterMotorsOn = new shooterMotorsOn(shooterSubsystem, .8, 11000, 10500);
 
   //Command groups:
   private final DriveSequence autoDriveSequence = new DriveSequence(drivetrain);
@@ -31,9 +37,13 @@ public class RobotContainer {
   public RobotContainer() {
     configureButtonBindings();
 
+    //Smartdashboard Buttons:
+    SmartDashboard.putData("shooter", shooterMotorsOn);
+
+    //Default Commands:
     drivetrain.setDefaultCommand(
-      new DefaultDriveCommand(xboxController::getLeftY, xboxController::getRightX, drivetrain
-    ));
+      new DefaultDriveCommand(xboxController::getRightX, xboxController::getRightX, drivetrain)
+    );
   }
   
   private void configureButtonBindings() {}
@@ -41,7 +51,6 @@ public class RobotContainer {
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
-   * 
    */
   public Command getAutonomousCommand() {
     return autoDriveSequence;
