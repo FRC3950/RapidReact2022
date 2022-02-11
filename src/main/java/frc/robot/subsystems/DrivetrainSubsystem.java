@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.misc.Constants;
 
@@ -29,6 +30,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.s[0], Constants.s[1]);
   private final Timer time = new Timer();
 
+  private double tm, count;
+
   public DrivetrainSubsystem() {
 
     leftS.follow(leftM);
@@ -42,6 +45,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
     leftM.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     rightM.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     //PID stuff might go here
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putBoolean("Shift:", getShift());
+    tm = getTime();
+    count = getEncoderCount();
   }
 
   public void shift(){
@@ -64,7 +74,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void encoderDrive(final double speed, final int units){ 
     do {
       m_drive.arcadeDrive(speed, 0);
-    } while(units > getEncoderCount());
+    } while(units > count);
+  }
+
+  public void timeDrive(final double speed, final int time){
+    restartTime();
+    do{
+      m_drive.arcadeDrive(speed, 0);
+    } while(time > tm);
   }
 
   public void setAngle(final double angle){
@@ -75,14 +92,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }  
 
   public double getTime(){ return time.get(); }
-  public void startTime(){ time.start(); }
-  public void resetTime(){ time.reset(); }
-
-  public boolean getShift(){
-    boolean shift = (solenoid.get() == Value.kForward) ? true : false;
-    return shift;
+  public void restartTime(){ 
+    time.reset(); 
+    time.start();
   }
 
-  @Override
-  public void periodic() {}
+  public boolean getShift(){
+    boolean shift = (solenoid.get() == Value.kForward);
+    return shift;
+  }
 }
