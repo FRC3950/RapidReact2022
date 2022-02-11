@@ -17,8 +17,9 @@ public class DriveSequence extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new RunCommand(()->drivetrain.encoderDrive(0.5, 40000), drivetrain),
-      new RunCommand(()->drivetrain.encoderDrive(-0.5, 40000), drivetrain)
+      new RunCommand(()->drivetrain.encoderDrive(0.5, 20000), drivetrain),
+      new RunCommand(()->drivetrain.encoderDrive(-0.5, 20000), drivetrain),
+      new RunCommand(()->drivetrain.timeDrive(0.5, 20000), drivetrain)
     );
   }
 }

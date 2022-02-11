@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.misc.Constants;
 
-import java.util.ArrayList;
-
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.*;
@@ -32,6 +30,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.s[0], Constants.s[1]);
   private final Timer time = new Timer();
 
+  private double tm, count;
+
   public DrivetrainSubsystem() {
 
     leftS.follow(leftM);
@@ -45,6 +45,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
     leftM.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     rightM.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     //PID stuff might go here
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putBoolean("Shift:", getShift());
+    tm = getTime();
+    count = getEncoderCount();
   }
 
   public void shift(){
@@ -67,7 +74,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void encoderDrive(final double speed, final int units){ 
     do {
       m_drive.arcadeDrive(speed, 0);
-    } while(units > getEncoderCount());
+    } while(units > count);
+  }
+
+  public void timeDrive(final double speed, final int time){
+    restartTime();
+    do{
+      m_drive.arcadeDrive(speed, 0);
+    } while(time > tm);
   }
 
   public void setAngle(final double angle){
@@ -84,12 +98,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   public boolean getShift(){
-    boolean shift = (solenoid.get() == Value.kForward) ? true : false;
+    boolean shift = (solenoid.get() == Value.kForward);
     return shift;
-  }
-
-  @Override
-  public void periodic() {
-    SmartDashboard.putBoolean("Shift:", getShift());
   }
 }
