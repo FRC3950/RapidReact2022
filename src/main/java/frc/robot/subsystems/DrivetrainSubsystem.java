@@ -17,6 +17,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.*;
 
+import java.util.Scanner;
+
 public class DrivetrainSubsystem extends SubsystemBase {
   /** Creates a new DrivetrainSubsystem. */
   private final WPI_TalonFX leftM = new WPI_TalonFX(1);
@@ -27,10 +29,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private final DifferentialDrive m_drive;
 
-  private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.s[0], Constants.s[1]);
+  //private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.s[0], Constants.s[1]);
   private final Timer time = new Timer();
 
   private double tm, count;
+
 
   public DrivetrainSubsystem() {
 
@@ -49,18 +52,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Shift:", getShift());
+    //SmartDashboard.putBoolean("Shift:", getShift());
     tm = getTime();
     count = getEncoderCount();
   }
 
-  public void shift(){
-    solenoid.toggle(); //Might have 2 solenoids
-  }
+  // public void shift(){
+  //   solenoid.toggle(); //Might have 2 solenoids
+  // }
 
-  public void shift(final Value val){
-    solenoid.set(val);
-  }
+  // public void shift(final Value val){
+  //   solenoid.set(val);
+  // }
 
   public void teleDrive(double x, double y){
     m_drive.arcadeDrive(x, y);
@@ -97,8 +100,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     time.start();
   }
 
-  public boolean getShift(){
-    boolean shift = (solenoid.get() == Value.kForward);
-    return shift;
-  }
+  // public boolean getShift(){
+  //   boolean shift = (solenoid.get() == Value.kForward);
+  //   return shift;
+  // }
 }
