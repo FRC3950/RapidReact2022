@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.prototypes;
+package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,14 +29,15 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void intake(final double speed){
-    if(intakeSensor.get() == false && intake.getSupplyCurrent() < 15.00){ //Will need to find actual current when jamming
+    if(!intakeSensor.get() && intake.getSupplyCurrent() < 15.00){ //Need to find real current when jamming
       intake.set(speed);
     }
-    else if(intake.getSupplyCurrent() >= 15.00){ //Will outtake ball if button bound to it is held down 
-      intake.set(-speed);
+    else if(intake.getSupplyCurrent() >= 15.00){ 
+      outtake(0.5);
     }
   }
 
+  /** @param speed (can be pos. or neg.) */ 
   public void outtake(double speed){
     if(speed > 0.0) speed *= -1;
     intake.set(speed);

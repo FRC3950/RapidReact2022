@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -35,6 +33,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public static final int internal_zone = 100; //likely not needed
 
   public ShooterSubsystem() {
+
     bottom.configFactoryDefault();
     top.configFactoryDefault();
 
@@ -57,6 +56,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     bottom.config_kI(0, kI_vel1);
     top.config_kI(0, kI_vel2);
+
+    bottom.configClosedloopRamp(closed_loop_ramp);
+    top.configClosedloopRamp(closed_loop_ramp);
   }
 
   public void motorOn(){
@@ -64,6 +66,9 @@ public class ShooterSubsystem extends SubsystemBase {
     top.set(ControlMode.Velocity, 10500);
   }
 
+  /** @param b Bottom motor velocity 
+   *  @param t Top motor velocity 
+   *  @param c Conveyor speed (< 1.0) */
   public void motorOn(double b, double t, double c){
     bottom.set(ControlMode.Velocity, b);
     top.set(ControlMode.Velocity, t);
@@ -71,7 +76,9 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
 
-  //Conveyor
+  //Conveyor stuff:
+
+
   public void setConveyor(final double speed){
     conveyor.set(speed);
   }

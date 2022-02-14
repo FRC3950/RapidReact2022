@@ -17,8 +17,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.*;
 
-import java.util.Scanner;
-
 public class DrivetrainSubsystem extends SubsystemBase {
   /** Creates a new DrivetrainSubsystem. */
   private final WPI_TalonFX leftM = new WPI_TalonFX(1);
@@ -32,7 +30,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   //private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.s[0], Constants.s[1]);
   private final Timer time = new Timer();
 
-  private double tm, count;
+  private double s, count; //Time (s) and encoder count
 
 
   public DrivetrainSubsystem() {
@@ -53,7 +51,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     //SmartDashboard.putBoolean("Shift:", getShift());
-    tm = getTime();
+    s = getTime();
     count = getEncoderCount();
   }
 
@@ -84,7 +82,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     restartTime();
     do{
       m_drive.arcadeDrive(speed, 0);
-    } while(time > tm);
+    } while (time > s);
   }
 
   public void setAngle(final double angle){

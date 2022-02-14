@@ -13,6 +13,7 @@ import frc.robot.misc.ShooterMotorsOn;
 import frc.robot.commands.auto.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 
 public class RobotContainer {
@@ -30,9 +31,15 @@ public class RobotContainer {
   //Controllers:
   private final XboxController xboxController = new XboxController(0);
 
+  //Choosers: 
+  private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
+
 
   public RobotContainer() {
     configureButtonBindings();
+    
+    //Chooser options:
+    autoChooser.addOption("Test auto sequence", autoDriveSequence);
 
     //Smartdashboard Buttons:
     SmartDashboard.putData("shooter", shooterMotorsOn);
@@ -50,6 +57,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoDriveSequence;
+    return autoChooser.getSelected();
   }
 }
