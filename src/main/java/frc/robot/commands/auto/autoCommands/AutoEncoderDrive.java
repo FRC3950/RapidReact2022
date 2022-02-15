@@ -18,6 +18,7 @@ public class AutoEncoderDrive extends CommandBase {
   public AutoEncoderDrive(DrivetrainSubsystem drivetrain, double count, double speed) {
     this.drivetrain = drivetrain;
     this.count = count;
+    this.speed = speed;
     addRequirements(drivetrain);
   }
 
