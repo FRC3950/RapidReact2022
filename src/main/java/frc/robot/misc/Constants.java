@@ -19,7 +19,7 @@ public final class Constants {
     public static int rightM = 2;
     public static int rightS = 14;
 
-    public static int[] s = {6,6}; //Solenoid
+    public static int[] sol = {6,6}; //Solenoid
 
     //Conveyor
     public static int conveyor = 5;

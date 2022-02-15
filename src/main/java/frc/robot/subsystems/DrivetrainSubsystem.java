@@ -27,7 +27,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private final DifferentialDrive m_drive;
 
-  //private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.s[0], Constants.s[1]);
+  //private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.sol[0], Constants.sol[1]);
   private final Timer time = new Timer();
 
   private double s, count; //Time (s) and encoder count
