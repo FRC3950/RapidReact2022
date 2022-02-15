@@ -22,7 +22,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final WPI_TalonFX top = new WPI_TalonFX(Constants.top);
   private final WPI_TalonSRX conveyor = new WPI_TalonSRX(Constants.conveyor);
 
-  private final DigitalInput sensor = new DigitalInput(Constants.sensor);
+  //private final DigitalInput sensor = new DigitalInput(Constants.sensor);
 
 
   private static final double kP_vel1 = 0.01, kP_vel2 = 0.01;
@@ -66,9 +66,9 @@ public class ShooterSubsystem extends SubsystemBase {
     top.set(ControlMode.Velocity, 10500);
   }
 
-  /** @param b Bottom motor velocity 
-   *  @param t Top motor velocity 
-   *  @param c Conveyor speed (< 1.0) */
+  /** @param b : Bottom motor velocity 
+   *  @param t : Top motor velocity 
+   *  @param c : Conveyor speed (< 1.0) */
   public void motorOn(double b, double t, double c){
     bottom.set(ControlMode.Velocity, b);
     top.set(ControlMode.Velocity, t);
@@ -77,7 +77,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
   //Conveyor stuff:
-
 
   public void setConveyor(final double speed){
     conveyor.set(speed);
@@ -90,12 +89,12 @@ public class ShooterSubsystem extends SubsystemBase {
     top.set(speed);
   }
 
-  public boolean getSensor(){
-    return sensor.get();
-  }
+  // public boolean getSensor(){
+  //   return sensor.get();
+  // }
 
   @Override
   public void periodic() {
-   SmartDashboard.putBoolean("sensor", getSensor());
+   //SmartDashboard.putBoolean("sensor", getSensor());
   }
 }

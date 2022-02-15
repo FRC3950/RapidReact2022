@@ -50,6 +50,12 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setSolenoid(final Value value){ 
     solenoid.set(value);
   }
+  
+  /** @param up - kForward if true and kReverse if false */
+  public void setSolenoid(boolean up){
+    if(up) solenoid.set(Value.kForward);
+    if(!up) solenoid.set(Value.kReverse);
+  }
 
   public boolean getSensor(){
     return intakeSensor.get();

@@ -31,6 +31,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final Timer time = new Timer();
 
   private double s, count; //Time (s) and encoder count
+  private int angle;
 
 
   public DrivetrainSubsystem() {
@@ -66,38 +67,30 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void teleDrive(double x, double y){
     m_drive.arcadeDrive(x, y);
   }
+  public void linearDrive(double speed){
+    m_drive.arcadeDrive(speed, 0);
+  }
 
+  public void setEncoderCount(double count){
+    leftM.getSensorCollection().setIntegratedSensorPosition(count, 0);
+  }
   public double getEncoderCount(){ 
     return leftM.getSelectedSensorPosition();
   }
-  
-  //Will be used for autonomous 
-  public void encoderDrive(final double speed, final int units){ 
-    do {
-      m_drive.arcadeDrive(speed, 0);
-    } while(units > count);
-  }
 
-  public void timeDrive(final double speed, final int time){
-    restartTime();
-    do{
-      m_drive.arcadeDrive(speed, 0);
-    } while (time > s);
+  public void setAngle(int target){
+    target = angle;
   }
-
-  public void setAngle(final double angle){
-    final double speed = (angle >= 180) ? -0.5 : 0.5; //Turns left or right depending on angle (p sure left is negative)
-    // do{
-    //   m_drive.arcadeDrive(0, speed);
-    // } while(); New gyro library is not released yet. Would be imu.getYawAngle() < angle
-  }  
+  public int getAngle(){
+    return angle;
+  }
 
   public double getTime(){ return time.get(); }
   public void restartTime(){ 
     time.reset(); 
     time.start();
   }
-
+  //Josh was here
   // public boolean getShift(){
   //   boolean shift = (solenoid.get() == Value.kForward);
   //   return shift;

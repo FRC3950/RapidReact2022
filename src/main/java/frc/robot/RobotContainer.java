@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.teleop.*;
 import frc.robot.misc.ShooterMotorsOn;
-import frc.robot.commands.auto.*;
+import frc.robot.commands.auto.autoCommands.*;
+import frc.robot.commands.auto.commandGroups.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -20,10 +21,10 @@ public class RobotContainer {
 
   //Subsystems:
   private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
-  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  //private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   //Commands:
-  private final ShooterMotorsOn shooterMotorsOn = new ShooterMotorsOn(shooterSubsystem, .8, 11000, 10500);
+  //private final ShooterMotorsOn shooterMotorsOn = new ShooterMotorsOn(shooterSubsystem, .8, 11000, 10500);
 
   //Command groups:
   private final DriveSequence autoDriveSequence = new DriveSequence(drivetrain);
@@ -38,11 +39,12 @@ public class RobotContainer {
   public RobotContainer() {
     configureButtonBindings();
     
-    //Chooser options:
+    //Autochooser options:
     autoChooser.addOption("Test auto sequence", autoDriveSequence);
 
     //Smartdashboard Buttons:
-    SmartDashboard.putData("shooter", shooterMotorsOn);
+    //SmartDashboard.putData("shooter", shooterMotorsOn);
+    SmartDashboard.putData("Auto command selection", autoChooser);
 
     //Default Commands:
     drivetrain.setDefaultCommand(
