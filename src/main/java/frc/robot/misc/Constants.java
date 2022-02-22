@@ -13,7 +13,8 @@ package frc.robot.misc;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    //Drivetrain
+    
+//Drivetrain
     public static int leftM = 1;
     public static int leftS = 15;
     public static int rightM = 2;
@@ -21,11 +22,13 @@ public final class Constants {
 
     public static int[] sol = {6,6}; //Solenoid
 
-    //Conveyor
+    public static final double kWidthMeters = 0.5;
+
+//Conveyor
     public static int conveyor = 5;
     public static int sensor = 6;
 
-    //Shooter 
+//Shooter 
     public static int top = 3;
     public static int bottom = 12;
 
