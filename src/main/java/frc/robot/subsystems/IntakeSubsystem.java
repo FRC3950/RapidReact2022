@@ -20,6 +20,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final DigitalInput intakeSensor = new DigitalInput(0); //Placeholder, also might need to make public in future
   private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 6,7); 
   private final WPI_TalonSRX intake = new WPI_TalonSRX(10);
+  // private final DoubleSolenoid solTest = new DoubleSolenoid(1,PneumaticsModuleType.REVPH, 6, 7)
 
   public IntakeSubsystem() {}
 
@@ -55,6 +56,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setSolenoid(boolean up){
     if(up) solenoid.set(Value.kForward);
     if(!up) solenoid.set(Value.kReverse);
+    // Maybe change to else
   }
 
   public boolean getSensor(){
