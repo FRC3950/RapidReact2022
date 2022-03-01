@@ -14,6 +14,7 @@ public class AutoTurnAngle extends CommandBase {
   public AutoTurnAngle(double targetAngle, DrivetrainSubsystem drivetrain) {
     this.targetAngle = targetAngle;
     this.drivetrain = drivetrain;
+    addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
