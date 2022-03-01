@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.misc.Constants;
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -26,6 +27,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final WPI_TalonFX rightS = new WPI_TalonFX(14);
 
   private final DifferentialDrive m_drive;
+
+  private final ADIS16470_IMU gyro = new ADIS16470_IMU();
 
   //private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.sol[0], Constants.sol[1]);
   private final Timer time = new Timer();
@@ -47,6 +50,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     leftM.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     rightM.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     //PID stuff might go here
+
   }
 
   @Override
@@ -71,12 +75,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_drive.arcadeDrive(speed, 0);
   }
 
+
   public void setEncoderCount(double count){
     leftM.getSensorCollection().setIntegratedSensorPosition(count, 0);
   }
   public double getEncoderCount(){ 
     return leftM.getSelectedSensorPosition();
   }
+  
 
   public void setAngle(int target){
     target = angle;
