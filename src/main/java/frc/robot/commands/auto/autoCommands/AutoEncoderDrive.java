@@ -11,11 +11,12 @@ public class AutoEncoderDrive extends CommandBase {
   /** Creates a new AutoEncoderDrive. */
   DrivetrainSubsystem drivetrain;
   double count, speed;
+  double currentCount;
   boolean finished;
 
   /** @param count - Desired encoder count
-   *  @param speed - Desired speed */
-  public AutoEncoderDrive(DrivetrainSubsystem drivetrain, double count, double speed) {
+   *  @param speed - Desired speed (<1.0) */
+  public AutoEncoderDrive(double count, double speed, DrivetrainSubsystem drivetrain) {
     this.drivetrain = drivetrain;
     this.count = count;
     this.speed = speed;
@@ -31,17 +32,20 @@ public class AutoEncoderDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    currentCount = drivetrain.getEncoderCount();
     drivetrain.linearDrive(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    drivetrain.resetAngle();
+  }
 
   // Returns true when the command should end.
 
   @Override
   public boolean isFinished() {
-    return (drivetrain.getEncoderCount() < count); // Returns true if (encoder count >= target) & vice versa
+    return (currentCount <= count); // Returns true if (encoder count >= target) & vice versa
   }
 }

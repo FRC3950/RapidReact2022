@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.misc.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 
@@ -17,23 +18,25 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. **/
 
-  private final DigitalInput intakeSensor = new DigitalInput(0); //Placeholder, also might need to make public in future
-  private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 6,7); 
-  private final WPI_TalonSRX intake = new WPI_TalonSRX(10);
+  //private final DigitalInput intakeSensor = new DigitalInput(0); //Placeholder, also might need to make public in future
+  private final DoubleSolenoid solenoid = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, 0,4); 
+  private final WPI_TalonSRX intake = new WPI_TalonSRX(Constants.intake);
   // private final DoubleSolenoid solTest = new DoubleSolenoid(1,PneumaticsModuleType.REVPH, 6, 7)
 
-  public IntakeSubsystem() {}
+  public IntakeSubsystem() {
+    
+  }
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Intake", getSensor());
+    //SmartDashboard.putBoolean("Intake", getSensor());
   }
 
   public void intake(final double speed){
-    if(!intakeSensor.get() && intake.getSupplyCurrent() < 15.00){ //Need to find real current when jamming
+    if(/*!intakeSensor.get() &&*/ intake.getSupplyCurrent() < 100.00){ //Need to find real current when jamming
       intake.set(speed);
     }
-    else if(intake.getSupplyCurrent() >= 15.00){ 
+    else if(intake.getSupplyCurrent() >= 100.00){ 
       outtake(0.5);
     }
   }
@@ -59,7 +62,7 @@ public class IntakeSubsystem extends SubsystemBase {
     // Maybe change to else
   }
 
-  public boolean getSensor(){
-    return intakeSensor.get();
-  }
+  // public boolean getSensor(){
+  //   return intakeSensor.get();
+  // }
 }

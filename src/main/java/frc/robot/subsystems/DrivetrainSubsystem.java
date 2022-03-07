@@ -20,17 +20,19 @@ import com.ctre.phoenix.motorcontrol.can.*;
 
 public class DrivetrainSubsystem extends SubsystemBase {
   /** Creates a new DrivetrainSubsystem. */
-  private final WPI_TalonFX leftM = new WPI_TalonFX(1);
-  private final WPI_TalonFX leftS = new WPI_TalonFX(15);
+  private final WPI_TalonFX leftM = new WPI_TalonFX(Constants.leftM);
+  private final WPI_TalonFX leftS = new WPI_TalonFX(Constants.leftS);
 
-  private final WPI_TalonFX rightM = new WPI_TalonFX(2);
-  private final WPI_TalonFX rightS = new WPI_TalonFX(14);
+  private final WPI_TalonFX rightM = new WPI_TalonFX(Constants.rightM);
+  private final WPI_TalonFX rightS = new WPI_TalonFX(Constants.rightS);
 
   private final DifferentialDrive m_drive;
 
   private static final ADIS16470_IMU gyro = new ADIS16470_IMU();
 
-  //private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.sol[0], Constants.sol[1]);
+
+  //private final DoubleSolenoid sol = new DoubleSolenoid(PneumaticsModuleType.REVPH, forwardChannel, reverseChannel)
+  //private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.driveSol[0], Constants.driveSol[1]);
   private final Timer time = new Timer();
 
   private double s, count; //Time (s) and encoder count
@@ -39,11 +41,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public DrivetrainSubsystem() {
 
+
     leftS.follow(leftM);
     rightS.follow(rightM);
 
     leftM.setNeutralMode(NeutralMode.Brake);
     rightM.setNeutralMode(NeutralMode.Brake);
+
 
     m_drive = new DifferentialDrive(leftM, rightM);
 
@@ -63,9 +67,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // public void shift(){
   //   solenoid.toggle(); //Might have 2 solenoids
   // }
-
   // public void shift(final Value val){
   //   solenoid.set(val);
+  // }
+  // public boolean getShift(){
+  //   boolean shift = (solenoid.get() == Value.kForward);
+  //   return shift;
   // }
 
   public void teleDrive(double x, double y){
@@ -90,6 +97,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public double getAngle(){
     return gyro.getAngle();
   }
+  public void resetAngle(){
+    gyro.reset();
+  }
 
   public double getTime(){ return time.get(); }
   public void restartTime(){ 
@@ -97,8 +107,4 @@ public class DrivetrainSubsystem extends SubsystemBase {
     time.start();
   }
   //Josh was here
-  // public boolean getShift(){
-  //   boolean shift = (solenoid.get() == Value.kForward);
-  //   return shift;
-  // }
 }

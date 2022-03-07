@@ -66,8 +66,8 @@ public class ShooterSubsystem extends SubsystemBase {
     top.set(ControlMode.Velocity, 10500);
   }
 
-  /** @param b : Bottom motor velocity 
-   *  @param t : Top motor velocity 
+  /** @param b : Bottom motor velocity (Default: 11000)
+   *  @param t : Top motor velocity (Default: 10500)
    *  @param c : Conveyor speed (< 1.0) */
   
   public void motorOn(double b, double t, double c){

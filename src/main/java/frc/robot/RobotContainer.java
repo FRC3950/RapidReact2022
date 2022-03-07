@@ -6,10 +6,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.teleop.*;
 import frc.robot.misc.ShooterMotorsOn;
+import frc.robot.commands.ToggleSolenoidCommand;
 import frc.robot.commands.auto.autoCommands.*;
 import frc.robot.commands.auto.commandGroups.*;
 import frc.robot.subsystems.*;
@@ -21,10 +23,14 @@ public class RobotContainer {
 
   //Subsystems:
   private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
-  //private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   //Commands:
   //private final ShooterMotorsOn shooterMotorsOn = new ShooterMotorsOn(shooterSubsystem, .8, 11000, 10500);
+  private final IntakeCommand intakeCommand = new IntakeCommand(intakeSubsystem, shooterSubsystem);
+  private final ToggleSolenoidCommand toggle = new ToggleSolenoidCommand(intakeSubsystem);
+  private final ShootCommand shootCommand = new ShootCommand(shooterSubsystem);
 
   //Command groups:
   private final DriveSequence autoDriveSequence = new DriveSequence(drivetrain);
@@ -48,11 +54,23 @@ public class RobotContainer {
 
     //Default Commands:
     drivetrain.setDefaultCommand(
-      new DefaultDriveCommand(xboxController::getLeftY, xboxController::getRightX, drivetrain)
+      new DefaultDriveCommand(xboxController::getRightX, xboxController::getLeftY, drivetrain)
     );
   }
   
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    new JoystickButton(xboxController, XboxController.Button.kA.value)
+      .whileHeld(intakeCommand);
+    new JoystickButton(xboxController, XboxController.Button.kB.value)
+      .whenPressed(() -> intakeSubsystem.setSolenoid(Value.kForward));
+    new JoystickButton(xboxController, XboxController.Button.kY.value)
+      .whenPressed(() -> intakeSubsystem.setSolenoid(Value.kReverse));
+    new JoystickButton(xboxController, XboxController.Button.kX.value)
+      .whileHeld(shootCommand);
+    new JoystickButton(xboxController, XboxController.Button.kRightBumper.value)
+      .whileHeld(() -> shooterSubsystem.setConveyor(0.5));
+
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

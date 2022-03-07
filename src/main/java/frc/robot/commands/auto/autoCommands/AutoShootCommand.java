@@ -5,17 +5,14 @@
 package frc.robot.commands.auto.autoCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
-public class AutoTurnAngle extends CommandBase {
-  /** Creates a new AutoTurnAngle. */
-  private double targetAngle, speed;
-  private final DrivetrainSubsystem drivetrain;
-  public AutoTurnAngle(double targetAngle, double speed, DrivetrainSubsystem drivetrain) {
-    this.targetAngle = targetAngle;
-    this.speed = speed;
-    this.drivetrain = drivetrain;
-    addRequirements(drivetrain);
+public class AutoShootCommand extends CommandBase {
+  /** Creates a new AutoShootCommand. */
+  ShooterSubsystem shooter;
+  public AutoShootCommand() {
+    //TODO: install 2 sensors and implement ball count system
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -24,19 +21,15 @@ public class AutoTurnAngle extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    drivetrain.teleDrive(0, speed);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (drivetrain.getAngle() >= targetAngle); 
+    return false;
   }
 }
