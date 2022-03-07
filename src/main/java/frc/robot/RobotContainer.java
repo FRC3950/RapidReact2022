@@ -32,6 +32,10 @@ public class RobotContainer {
   private final ToggleSolenoidCommand toggle = new ToggleSolenoidCommand(intakeSubsystem);
   private final ShootCommand shootCommand = new ShootCommand(shooterSubsystem);
 
+  //Auto commands:
+  private final AutoEncoderDrive autoEncoderDrive = new AutoEncoderDrive(200000, 0.5, drivetrain);
+  private final AutoShootCommand autoShootCommand = new AutoShootCommand(shooterSubsystem, 6);
+
   //Command groups:
   private final DriveSequence autoDriveSequence = new DriveSequence(drivetrain);
 
@@ -47,6 +51,8 @@ public class RobotContainer {
     
     //Autochooser options:
     autoChooser.addOption("Test auto sequence", autoDriveSequence);
+    autoChooser.addOption("Test auto drive forward", autoEncoderDrive);
+    autoChooser.addOption("Test auto shoot", autoShootCommand);
 
     //Smartdashboard Buttons:
     //SmartDashboard.putData("shooter", shooterMotorsOn);
@@ -69,6 +75,8 @@ public class RobotContainer {
       .whileHeld(shootCommand);
     new JoystickButton(xboxController, XboxController.Button.kRightBumper.value)
       .whileHeld(() -> shooterSubsystem.setConveyor(0.5));
+    new JoystickButton(xboxController, XboxController.Button.kLeftBumper.value)
+      .whenPressed(autoEncoderDrive);
 
   }
   /**

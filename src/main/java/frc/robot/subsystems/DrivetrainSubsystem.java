@@ -54,7 +54,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     leftM.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     rightM.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     //PID stuff might go here
-
+setEncoderCount(0);
   }
 
   @Override
@@ -62,7 +62,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     //SmartDashboard.putBoolean("Shift:", getShift());
     s = getTime();
     count = getEncoderCount();
+    SmartDashboard.putNumber("Encoder Front Left: ", count);
   }
+
+ 
 
   // public void shift(){
   //   solenoid.toggle(); //Might have 2 solenoids
@@ -76,10 +79,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // }
 
   public void teleDrive(double x, double y){
-    m_drive.arcadeDrive(x, y);
+    m_drive.arcadeDrive(x, -y);
   }
   public void linearDrive(double speed){
-    m_drive.arcadeDrive(speed, 0);
+    m_drive.arcadeDrive(0, speed);
   }
 
 
@@ -91,7 +94,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
   
 
-  public void setAngle(double target){
+  public void setTargetAngle(double target){
     target = angle;
   }
   public double getAngle(){
@@ -106,5 +109,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     time.reset(); 
     time.start();
   }
+
+
+
+  
+  
   //Josh was here
 }

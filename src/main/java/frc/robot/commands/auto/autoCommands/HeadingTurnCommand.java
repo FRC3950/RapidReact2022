@@ -2,22 +2,14 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.teleop;
+package frc.robot.commands.auto.autoCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.*;
-import java.util.function.DoubleSupplier;
 
-public class DefaultDriveCommand extends CommandBase {
-  /** Creates a new DefaultDriveCommand. */
-  DoubleSupplier x, twist;
-  DrivetrainSubsystem drivetrain;
-  
-  public DefaultDriveCommand(DoubleSupplier x, DoubleSupplier twist, DrivetrainSubsystem drivetrain) {
-    this.x = x;
-    this.twist = twist;
-    this.drivetrain = drivetrain;
-    addRequirements(drivetrain);
+public class HeadingTurnCommand extends CommandBase {
+  /** Creates a new HeadingTurnCommand. */
+  public HeadingTurnCommand() {
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -26,9 +18,7 @@ public class DefaultDriveCommand extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    drivetrain.teleDrive(1 * x.getAsDouble(), twist.getAsDouble());
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

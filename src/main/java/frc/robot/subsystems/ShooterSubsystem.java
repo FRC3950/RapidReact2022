@@ -43,8 +43,8 @@ public class ShooterSubsystem extends SubsystemBase {
     bottom.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor,0, 10); //Read more into timeout Param
     top.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
 
-    bottom.setInverted(false);
-    top.setInverted(true);
+    bottom.setInverted(true);
+    top.setInverted(false);
     bottom.setSensorPhase(false);
     top.setSensorPhase(false);
     
@@ -75,7 +75,6 @@ public class ShooterSubsystem extends SubsystemBase {
     top.set(ControlMode.Velocity, t);
     conveyor.set(c);    
   }
-
 
   //Conveyor stuff:
 
