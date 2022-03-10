@@ -101,8 +101,6 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void incrementTargetVelocity(){
-    System.out.println("Incremented");
-    increments++;
     targetTopVelocity += 200;
     targetBottomVelocity += 200;
   }
