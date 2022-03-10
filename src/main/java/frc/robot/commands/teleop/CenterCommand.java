@@ -5,17 +5,13 @@
 package frc.robot.commands.teleop;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.*;
-import java.util.function.DoubleSupplier;
+import frc.robot.subsystems.DrivetrainSubsystem;
 
-public class DefaultDriveCommand extends CommandBase {
-  /** Creates a new DefaultDriveCommand. */
-  DoubleSupplier x, twist;
-  DrivetrainSubsystem drivetrain;
-  
-  public DefaultDriveCommand(DoubleSupplier x, DoubleSupplier twist, DrivetrainSubsystem drivetrain) {
-    this.x = x;
-    this.twist = twist;
+public class CenterCommand extends CommandBase {
+  /** Creates a new CenterCommand. */
+  private final DrivetrainSubsystem drivetrain;
+  private boolean withinRange = false;
+  public CenterCommand(DrivetrainSubsystem drivetrain) {
     this.drivetrain = drivetrain;
     addRequirements(drivetrain);
   }
@@ -27,16 +23,26 @@ public class DefaultDriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drivetrain.teleDrive(x.getAsDouble(), twist.getAsDouble());
+    if(drivetrain.getAngle() > 5.0){
+      drivetrain.turn(0.25);
+    } 
+    else if(drivetrain.getAngle() < -5.0){
+      drivetrain.turn(-0.25);
+    }
+    else {
+      withinRange = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    drivetrain.turn(0.0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return withinRange;
   }
 }

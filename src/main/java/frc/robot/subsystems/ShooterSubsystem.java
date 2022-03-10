@@ -32,19 +32,22 @@ public class ShooterSubsystem extends SubsystemBase {
   private static final double closed_loop_ramp = 0.2;
   public static final int internal_zone = 100; //likely not needed
 
+  public int targetTopVelocity = 11000;
+  public int targetBottomVelocity = 10500;
+
+  private int decrements = 0;
+  private int increments = 0;
+
   public ShooterSubsystem() {
 
     bottom.configFactoryDefault();
     top.configFactoryDefault();
 
-    bottom.setNeutralMode(NeutralMode.Coast);
-    top.setNeutralMode(NeutralMode.Coast);
-
     bottom.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor,0, 10); //Read more into timeout Param
     top.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
 
-    bottom.setInverted(true);
-    top.setInverted(false);
+    bottom.setInverted(false);
+    top.setInverted(true);
     bottom.setSensorPhase(false);
     top.setSensorPhase(false);
     
@@ -59,6 +62,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     bottom.configClosedloopRamp(closed_loop_ramp);
     top.configClosedloopRamp(closed_loop_ramp);
+
   }
 
   public void motorOn(){
@@ -76,25 +80,49 @@ public class ShooterSubsystem extends SubsystemBase {
     conveyor.set(c);    
   }
 
-  //Conveyor stuff:
+  /** @return Returns double[] of target velocities (set w/ SmartDashboard) of bottom motor [0] and top motor [1]*/
+  public double[] getTargetVelocities(){
+    return new double[]{
+      SmartDashboard.getNumber("Bottom target velocity value", targetBottomVelocity + (increments * 200 - (decrements * 200))),
+      SmartDashboard.getNumber("Top target velocity value", targetTopVelocity + (increments * 200 - (decrements * 200)))
+    };
+  }
 
+  public double[] getCurrentVelocities(){
+    return new double[] {
+      bottom.getSelectedSensorVelocity(),
+      top.getSelectedSensorVelocity()
+    };
+  }
+
+  public void decrementTargetVelocity(){
+    targetTopVelocity -= 200;
+    targetBottomVelocity -= 200;
+  }
+
+  public void incrementTargetVelocity(){
+    System.out.println("Incremented");
+    increments++;
+    targetTopVelocity += 200;
+    targetBottomVelocity += 200;
+  }
+
+  //Conveyor stuff:
   public void setConveyor(final double speed){
     conveyor.set(speed);
   }
 
   public void outtake(double speed){
-    if(speed > 0.0) speed *= -1;
+    speed = -Math.abs(speed);
+
     conveyor.set(speed);
     bottom.set(speed);
     top.set(speed);
   }
 
-  // public boolean getSensor(){
-  //   return sensor.get();
-  // }
-
   @Override
   public void periodic() {
-   //SmartDashboard.putBoolean("sensor", getSensor());
+    SmartDashboard.putNumber("Bottom target velocity value", targetBottomVelocity);
+    SmartDashboard.putNumber("Top target velocity value", targetTopVelocity);
   }
 }

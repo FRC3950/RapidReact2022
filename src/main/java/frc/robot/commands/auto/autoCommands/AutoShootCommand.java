@@ -11,14 +11,14 @@ import edu.wpi.first.wpilibj.Timer;
 public class AutoShootCommand extends CommandBase {
   /** Creates a new AutoShootCommand. */
   ShooterSubsystem shooter;
-  Timer timer = new Timer();
+  private final Timer timer = new Timer();
 
   double time;
   double currentTime = 0;
 
   public AutoShootCommand(ShooterSubsystem shooter, final double time) {
     this.shooter = shooter;
-    this.time = time + 2; //period for shooters to spin up
+    this.time = time; 
     addRequirements(shooter);
   }
 
@@ -26,20 +26,15 @@ public class AutoShootCommand extends CommandBase {
   @Override
   public void initialize() {
     timer.reset();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    timer.start();
-    currentTime = timer.get();
-    
-    if(timer.get() <= 2){
-      shooter.motorOn(12500, 12000, 0.0);
-    }
-    else {
-      shooter.motorOn(12500, 12000, 1.00);
+    shooter.motorOn(-11000, -10500, 0.0);
+    if(timer.get() > 1.5){
+      shooter.motorOn(-11000, -10500, 0.95);
     }
   }
 

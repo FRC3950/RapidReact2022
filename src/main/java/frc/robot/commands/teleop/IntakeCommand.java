@@ -34,7 +34,7 @@ public class IntakeCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.setSolenoid(Value.kForward);
+    intake.setSolenoid(Value.kForward); //inverted
     intake.intake(0);
     shooter.setConveyor(0);
   }

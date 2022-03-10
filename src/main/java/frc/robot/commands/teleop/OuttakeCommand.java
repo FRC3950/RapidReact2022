@@ -5,19 +5,17 @@
 package frc.robot.commands.teleop;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.*;
-import java.util.function.DoubleSupplier;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
-public class DefaultDriveCommand extends CommandBase {
-  /** Creates a new DefaultDriveCommand. */
-  DoubleSupplier x, twist;
-  DrivetrainSubsystem drivetrain;
-  
-  public DefaultDriveCommand(DoubleSupplier x, DoubleSupplier twist, DrivetrainSubsystem drivetrain) {
-    this.x = x;
-    this.twist = twist;
-    this.drivetrain = drivetrain;
-    addRequirements(drivetrain);
+public class OuttakeCommand extends CommandBase {
+  /** Creates a new OuttakeCommand. */
+  private final ShooterSubsystem shooter;
+  private final IntakeSubsystem intake;
+  public OuttakeCommand(ShooterSubsystem shooter, IntakeSubsystem intake) {
+    this.shooter = shooter;
+    this.intake = intake;
+    addRequirements(shooter, intake);
   }
 
   // Called when the command is initially scheduled.
@@ -27,7 +25,8 @@ public class DefaultDriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drivetrain.teleDrive(x.getAsDouble(), twist.getAsDouble());
+    shooter.outtake(0.5);
+    intake.outtake(0.75);
   }
 
   // Called once the command ends or is interrupted.

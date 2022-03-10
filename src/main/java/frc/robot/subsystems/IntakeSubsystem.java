@@ -43,7 +43,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /** @param speed (can be pos. or neg.) */ 
   public void outtake(double speed){
-    if(speed > 0.0) speed *= -1;
+    speed = -Math.abs(speed);
     intake.set(speed);
   }
 
@@ -59,7 +59,6 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setSolenoid(boolean up){
     if(up) solenoid.set(Value.kForward);
     if(!up) solenoid.set(Value.kReverse);
-    // Maybe change to else
   }
 
   // public boolean getSensor(){

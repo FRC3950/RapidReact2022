@@ -32,7 +32,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 
   //private final DoubleSolenoid sol = new DoubleSolenoid(PneumaticsModuleType.REVPH, forwardChannel, reverseChannel)
-  //private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.driveSol[0], Constants.driveSol[1]);
+  private final DoubleSolenoid solenoid = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, 1, 5);
   private final Timer time = new Timer();
 
   private double s, count; //Time (s) and encoder count
@@ -41,20 +41,25 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public DrivetrainSubsystem() {
 
+    leftM.setNeutralMode(NeutralMode.Coast);
+    rightM.setNeutralMode(NeutralMode.Coast);
 
     leftS.follow(leftM);
     rightS.follow(rightM);
 
-    leftM.setNeutralMode(NeutralMode.Brake);
-    rightM.setNeutralMode(NeutralMode.Brake);
+
 
 
     m_drive = new DifferentialDrive(leftM, rightM);
 
     leftM.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     rightM.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-    //PID stuff might go here
-setEncoderCount(0);
+    setEncoderCount(0);
+
+    gyro.calibrate();
+
+    solenoid.set(Value.kForward);
+
   }
 
   @Override
@@ -63,16 +68,22 @@ setEncoderCount(0);
     s = getTime();
     count = getEncoderCount();
     SmartDashboard.putNumber("Encoder Front Left: ", count);
+    SmartDashboard.putNumber("Yaw angle", getAngle());
   }
 
- 
+  public void toggleDriveGear(){
+    if(solenoid.get() == Value.kReverse){
+      solenoid.set(Value.kForward);
+    }
+    else if(solenoid.get() != Value.kReverse){
+      solenoid.set(Value.kReverse);
+    }
+  }
 
-  // public void shift(){
-  //   solenoid.toggle(); //Might have 2 solenoids
-  // }
-  // public void shift(final Value val){
-  //   solenoid.set(val);
-  // }
+  public void shiftBack(){
+    solenoid.set(Value.kReverse);
+
+  }
   // public boolean getShift(){
   //   boolean shift = (solenoid.get() == Value.kForward);
   //   return shift;
@@ -84,6 +95,9 @@ setEncoderCount(0);
   public void linearDrive(double speed){
     m_drive.arcadeDrive(0, speed);
   }
+  public void turn(double speed){
+    m_drive.arcadeDrive(speed, 0);
+  }
 
 
   public void setEncoderCount(double count){
@@ -94,9 +108,6 @@ setEncoderCount(0);
   }
   
 
-  public void setTargetAngle(double target){
-    target = angle;
-  }
   public double getAngle(){
     return gyro.getAngle();
   }
@@ -110,9 +121,5 @@ setEncoderCount(0);
     time.start();
   }
 
-
-
-  
-  
   //Josh was here
 }
