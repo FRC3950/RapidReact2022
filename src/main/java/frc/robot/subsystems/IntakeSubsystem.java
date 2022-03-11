@@ -18,10 +18,12 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. **/
 
-  //private final DigitalInput intakeSensor = new DigitalInput(0); //Placeholder, also might need to make public in future
+  private final DigitalInput intakeSensor = new DigitalInput(0); 
   private final DoubleSolenoid solenoid = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, 0,4); 
   private final WPI_TalonSRX intake = new WPI_TalonSRX(Constants.intake);
   // private final DoubleSolenoid solTest = new DoubleSolenoid(1,PneumaticsModuleType.REVPH, 6, 7)
+
+  public int ballCount = 0;
 
   public IntakeSubsystem() {
     
@@ -29,7 +31,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //SmartDashboard.putBoolean("Intake", getSensor());
+    SmartDashboard.putBoolean("Intake", getSensor());
+    SmartDashboard.putNumber("Ball count", getBallCount());
   }
 
   public void intake(final double speed){
@@ -61,7 +64,17 @@ public class IntakeSubsystem extends SubsystemBase {
     if(!up) solenoid.set(Value.kReverse);
   }
 
-  // public boolean getSensor(){
-  //   return intakeSensor.get();
-  // }
+  public boolean getSensor(){
+    return intakeSensor.get();
+  }
+
+  public int getBallCount(){
+    if(!intakeSensor.get() && ballCount == 0){
+      ballCount++;
+    }
+    else if(!intakeSensor.get() && ballCount == 1){
+      ballCount--;
+    }
+    return ballCount;
+  }
 }
