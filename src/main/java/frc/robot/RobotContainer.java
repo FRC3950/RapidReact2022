@@ -33,7 +33,7 @@ public class RobotContainer {
   private final ShootCommand shootCommand = new ShootCommand(shooterSubsystem);
   private final OuttakeCommand outtakeCommand = new OuttakeCommand(shooterSubsystem, intakeSubsystem);
   private final CenterCommand centerCommand = new CenterCommand(drivetrain);
-  private final ClimberCommand climberCommand = new ClimberCommand(climberSubsystem);
+
 
   //Auto commands:
   private final AutoEncoderDrive autoEncoderDrive = new AutoEncoderDrive(200000, 0.5, drivetrain);
@@ -65,6 +65,10 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(
       new DefaultDriveCommand(drivestick::getTwist, drivestick::getY, drivetrain)
     );
+
+    climberSubsystem.setDefaultCommand(
+      new ClimberCommand(climberSubsystem, xboxController::getRightY)
+    );
   }
   
   private void configureButtonBindings() {
@@ -87,10 +91,10 @@ public class RobotContainer {
     
     new JoystickButton(xboxController, XboxController.Button.kRightBumper.value)
       .whenPressed(shooterSubsystem::incrementTargetVelocity);
-      
 
-    new JoystickButton(xboxController, XboxController.Axis.kRightY.value)
-      .whileHeld(climberCommand);
+
+    // new JoystickButton(xboxController, XboxController.Axis.kRightY.value)
+    //   .whileHeld(climberCommand);
 
     new JoystickButton(xboxController, XboxController.Button.kY.value)
       .whenPressed(climberSubsystem::togglePivot);

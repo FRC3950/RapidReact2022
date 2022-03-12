@@ -4,6 +4,8 @@
 
 package frc.robot.commands.teleop;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -11,8 +13,10 @@ import frc.robot.subsystems.ClimberSubsystem;
 public class ClimberCommand extends CommandBase {
   /** Creates a new ClimberCommand. */
   ClimberSubsystem climber;
-  public ClimberCommand(ClimberSubsystem climber) {
+  DoubleSupplier y;
+  public ClimberCommand(ClimberSubsystem climber, DoubleSupplier y) {
     this.climber = climber;
+    this.y = y;
     addRequirements(climber);
   }
 
@@ -24,7 +28,7 @@ public class ClimberCommand extends CommandBase {
   @Override
   public void execute() {
     climber.setSolenoid(Value.kReverse); //Inverted
-    climber.setMotors(0.5);
+    climber.setMotors(y.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
