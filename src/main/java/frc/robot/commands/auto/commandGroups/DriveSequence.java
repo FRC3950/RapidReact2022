@@ -16,12 +16,12 @@ import frc.robot.commands.auto.commandGroups.*;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class DriveSequence extends SequentialCommandGroup {
   /** Creates a new DriveSequence. */
-  public DriveSequence(DrivetrainSubsystem drivetrain) {
+  public DriveSequence(DrivetrainSubsystem drivetrain, ShooterSubsystem shooter) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new AutoEncoderDrive(10000, 0.5, drivetrain),
-      new AutoEncoderDrive(20000, -0.5, drivetrain)
+      new AutoShootCommand(shooter, 2.5),
+      new AutoEncoderDrive(10000, 0.75, drivetrain)
     );
   }
 }

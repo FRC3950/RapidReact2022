@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.teleop.*;
 import frc.robot.misc.ShooterMotorsOn;
-import frc.robot.commands.ToggleSolenoidCommand;
 import frc.robot.commands.auto.autoCommands.*;
 import frc.robot.commands.auto.commandGroups.*;
 import frc.robot.subsystems.*;
@@ -41,7 +40,7 @@ public class RobotContainer {
   private final AutoShootCommand autoShootCommand = new AutoShootCommand(shooterSubsystem, 6);
 
   //Command groups:
-  private final DriveSequence autoDriveSequence = new DriveSequence(drivetrain);
+  private final DriveSequence autoDriveSequence = new DriveSequence(drivetrain, shooterSubsystem);
 
   //Controllers:
   private final XboxController xboxController = new XboxController(0);
