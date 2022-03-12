@@ -16,6 +16,9 @@ public class AutoShootCommand extends CommandBase {
   double time;
   double currentTime = 0;
 
+  double targetspeedB, targetspeedT;
+  double currentspeedB, currentSpeedT;
+
   public AutoShootCommand(ShooterSubsystem shooter, final double time) {
     this.shooter = shooter;
     this.time = time; 
@@ -32,9 +35,21 @@ public class AutoShootCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.motorOn(-11000, -10500, 0.0);
-    if(timer.get() > 1.5){
-      shooter.motorOn(-11000, -10500, 0.95);
+
+    targetspeedB = Math.abs(shooter.getTargetVelocities()[0]);
+    targetspeedT = Math.abs(shooter.getTargetVelocities()[1]);
+
+    currentspeedB = Math.abs(shooter.getCurrentVelocities()[0]);
+    currentSpeedT = Math.abs(shooter.getCurrentVelocities()[1]);
+
+    if(currentspeedB >= targetspeedB - 200 && currentspeedB <= targetspeedB + 200 
+    && currentSpeedT >= targetspeedT - 200 && currentSpeedT <= targetspeedT + 200){
+      System.out.println(targetspeedB);
+      System.out.println(currentspeedB);
+      shooter.motorOn(-targetspeedB, -targetspeedT, 0.95);
+    }
+    else{
+      shooter.motorOn(-targetspeedB, -targetspeedT, 0.0);
     }
   }
 

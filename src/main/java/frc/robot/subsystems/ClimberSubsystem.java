@@ -18,13 +18,14 @@ public class ClimberSubsystem extends SubsystemBase {
   WPI_TalonFX master;
   WPI_TalonFX follower;
 
-  DoubleSolenoid whinch;
+  DoubleSolenoid whinch, pivot;
 
   public ClimberSubsystem() {
     master = new WPI_TalonFX(Constants.master);
     follower = new WPI_TalonFX(Constants.follower);
 
-    whinch = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, 2,6);
+    whinch = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, Constants.winch[0], Constants.winch[1]);
+    pivot = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, Constants.pivot[0], Constants.pivot[1]);
 
     follower.follow(master);
   }
@@ -46,6 +47,15 @@ public class ClimberSubsystem extends SubsystemBase {
     } 
     else {
       whinch.set(Value.kForward);
+    }
+  }
+
+  public void togglePivot(){
+    if(pivot.get() == Value.kForward){
+      pivot.set(Value.kReverse);
+    } 
+    else {
+      pivot.set(Value.kForward);
     }
   }
 

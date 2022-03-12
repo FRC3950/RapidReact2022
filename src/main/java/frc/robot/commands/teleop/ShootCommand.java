@@ -19,8 +19,7 @@ public class ShootCommand extends CommandBase {
   double targetspeedB, targetspeedT;
   double currentspeedB, currentSpeedT;
 
-  int increments, decrements;
-
+  
   public ShootCommand(ShooterSubsystem shooter) {
     this.shooter = shooter;
     addRequirements(shooter);
@@ -31,10 +30,7 @@ public class ShootCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    timer.reset();
-    timer.start();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

@@ -78,6 +78,7 @@ public class RobotContainer {
     new JoystickButton(xboxController, XboxController.Button.kB.value)
       .whenPressed(() -> intakeSubsystem.setSolenoid(Value.kForward));
 
+
     new JoystickButton(xboxController, XboxController.Button.kX.value)
       .whileHeld(shootCommand);
 
@@ -86,9 +87,13 @@ public class RobotContainer {
     
     new JoystickButton(xboxController, XboxController.Button.kRightBumper.value)
       .whenPressed(shooterSubsystem::incrementTargetVelocity);
+      
 
     new JoystickButton(xboxController, XboxController.Axis.kRightY.value)
       .whileHeld(climberCommand);
+
+    new JoystickButton(xboxController, XboxController.Button.kY.value)
+      .whenPressed(climberSubsystem::togglePivot);
 
     
     //Joystick buttons:
