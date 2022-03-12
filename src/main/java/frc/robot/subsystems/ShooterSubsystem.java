@@ -83,15 +83,14 @@ public class ShooterSubsystem extends SubsystemBase {
   /** @return Returns double[] of target velocities (set w/ SmartDashboard) of bottom motor [0] and top motor [1]*/
   public double[] getTargetVelocities(){
     return new double[]{
-      SmartDashboard.getNumber("Bottom target velocity value", targetBottomVelocity + (increments * 200 - (decrements * 200))),
-      SmartDashboard.getNumber("Top target velocity value", targetTopVelocity + (increments * 200 - (decrements * 200)))
+      targetBottomVelocity, targetTopVelocity
     };
   }
 
   public double[] getCurrentVelocities(){
     return new double[] {
-      bottom.getSelectedSensorVelocity(),
-      top.getSelectedSensorVelocity()
+      bottom.getSelectedSensorVelocity(0),
+      top.getSelectedSensorVelocity(0)
     };
   }
 
@@ -122,5 +121,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Bottom target velocity value", targetBottomVelocity);
     SmartDashboard.putNumber("Top target velocity value", targetTopVelocity);
+
+    SmartDashboard.putNumber("Bottom shooter speed:", getCurrentVelocities()[0]);
+    SmartDashboard.putNumber("Top shooter speed:", getCurrentVelocities()[1]);
   }
 }

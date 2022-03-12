@@ -26,14 +26,15 @@ public class RobotContainer {
   private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
 
   //Commands:
-  //private final ShooterMotorsOn shooterMotorsOn = new ShooterMotorsOn(shooterSubsystem, .8, 11000, 10500);
   private final IntakeCommand intakeCommand = new IntakeCommand(intakeSubsystem, shooterSubsystem);
   private final ToggleSolenoidCommand toggle = new ToggleSolenoidCommand(intakeSubsystem);
   private final ShootCommand shootCommand = new ShootCommand(shooterSubsystem);
   private final OuttakeCommand outtakeCommand = new OuttakeCommand(shooterSubsystem, intakeSubsystem);
   private final CenterCommand centerCommand = new CenterCommand(drivetrain);
+  private final ClimberCommand climberCommand = new ClimberCommand(climberSubsystem);
 
   //Auto commands:
   private final AutoEncoderDrive autoEncoderDrive = new AutoEncoderDrive(200000, 0.5, drivetrain);
@@ -58,8 +59,7 @@ public class RobotContainer {
     autoChooser.addOption("Test auto drive forward", autoEncoderDrive);
     autoChooser.addOption("Test auto shoot", autoShootCommand);
 
-    //Smartdashboard Buttons:
-    //SmartDashboard.putData("shooter", shooterMotorsOn);
+    //Smartdashboard:
     SmartDashboard.putData("Auto command selection", autoChooser);
 
     //Default Commands:
@@ -69,6 +69,7 @@ public class RobotContainer {
   }
   
   private void configureButtonBindings() {
+    //Xbox buttons: 
     new JoystickButton(xboxController, XboxController.Button.kA.value)
       .whileHeld(intakeCommand);
     
@@ -87,6 +88,11 @@ public class RobotContainer {
     new JoystickButton(xboxController, XboxController.Button.kRightBumper.value)
       .whenPressed(shooterSubsystem::incrementTargetVelocity);
 
+    new JoystickButton(xboxController, XboxController.Axis.kRightY.value)
+      .whileHeld(climberCommand);
+
+    
+    //Joystick buttons:
     new JoystickButton(drivestick, 5)
       .whenPressed(drivetrain::toggleDriveGear);
 

@@ -4,18 +4,16 @@
 
 package frc.robot.commands.teleop;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 
-public class OuttakeCommand extends CommandBase {
-  /** Creates a new OuttakeCommand. */
-  private final ShooterSubsystem shooter;
-  private final IntakeSubsystem intake;
-  public OuttakeCommand(ShooterSubsystem shooter, IntakeSubsystem intake) {
-    this.shooter = shooter;
-    this.intake = intake;
-    addRequirements(shooter, intake);
+public class ClimberCommand extends CommandBase {
+  /** Creates a new ClimberCommand. */
+  ClimberSubsystem climber;
+  public ClimberCommand(ClimberSubsystem climber) {
+    this.climber = climber;
+    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
@@ -25,15 +23,15 @@ public class OuttakeCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.outtake(0.5);
-    intake.outtake(0.75);
+    climber.setSolenoid(Value.kReverse); //Inverted
+    climber.setMotors(0.5);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.outtake(0);
-    intake.outtake(0);
+    climber.setSolenoid(Value.kForward);
+    climber.setMotors(0.0);
   }
 
   // Returns true when the command should end.

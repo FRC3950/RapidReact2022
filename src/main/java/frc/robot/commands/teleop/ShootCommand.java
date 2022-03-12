@@ -7,6 +7,8 @@ package frc.robot.commands.teleop;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShootCommand extends CommandBase {
@@ -38,31 +40,29 @@ public class ShootCommand extends CommandBase {
   @Override
   public void execute() {
 
-    SmartDashboard.putNumber("Bottom shooter speed:", shooter.getTargetVelocities()[0]);
-    SmartDashboard.putNumber("Top shooter speed:", shooter.getTargetVelocities()[1]);
-
     targetspeedB = Math.abs(shooter.getTargetVelocities()[0]);
     targetspeedT = Math.abs(shooter.getTargetVelocities()[1]);
 
-    // currentspeedB = Math.abs(shooter.getTargetVelocities()[0]);
-    // currentSpeedT = Math.abs(shooter.getTargetVelocities()[1]);
+    currentspeedB = Math.abs(shooter.getCurrentVelocities()[0]);
+    currentSpeedT = Math.abs(shooter.getCurrentVelocities()[1]);
     
-    if(timer.get() > 1.25){
+  
+    if(currentspeedB >= targetspeedB - 200 && currentspeedB <= targetspeedB + 200 
+    && currentSpeedT >= targetspeedT - 200 && currentSpeedT <= targetspeedT + 200){
+      System.out.println(targetspeedB);
+      System.out.println(currentspeedB);
       shooter.motorOn(-targetspeedB, -targetspeedT, 0.95);
     }
-
-    shooter.motorOn(-targetspeedB, -targetspeedT, 0.0);
-
-    // if(currentspeedB >= 10500 && currentspeedB <= 12000 
-    // && currentSpeedT >= 10000 && currentSpeedT <= 11000){
-    //   shooter.motorOn(-targetspeedB, -targetspeedT, 0.95);
-    // } was not working
+    else{
+      shooter.motorOn(-targetspeedB, -targetspeedT, 0.0);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     shooter.motorOn(0, 0, 0);
+    IntakeSubsystem.ballCount = 0;
   }
 
   // Returns true when the command should end.

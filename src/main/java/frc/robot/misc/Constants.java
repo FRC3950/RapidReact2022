@@ -31,11 +31,16 @@ public final class Constants {
 //Shooter 
     public static int top = 8;
     public static int bottom = 7;
+
 //Intake
     public static int intake = 9;
     public static int[] solenoid = {0,4};
+
 //Climber
     public static int[] winch = {2,6};
     public static int[] pivot = {3,7};
+
+    public static int master = 6;
+    public static int follower = 5;
 
 }

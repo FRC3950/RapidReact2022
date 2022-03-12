@@ -23,7 +23,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final WPI_TalonSRX intake = new WPI_TalonSRX(Constants.intake);
   // private final DoubleSolenoid solTest = new DoubleSolenoid(1,PneumaticsModuleType.REVPH, 6, 7)
 
-  public int ballCount = 0;
+  public static int ballCount = 0;
 
   public IntakeSubsystem() {
     
@@ -61,7 +61,7 @@ public class IntakeSubsystem extends SubsystemBase {
   /** @param up - kForward if true and kReverse if false */
   public void setSolenoid(boolean up){
     if(up) solenoid.set(Value.kForward);
-    if(!up) solenoid.set(Value.kReverse);
+    if(up == false) solenoid.set(Value.kReverse);
   }
 
   public boolean getSensor(){
@@ -69,11 +69,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public int getBallCount(){
-    if(!intakeSensor.get() && ballCount == 0){
+    if(intakeSensor.get() == false  && ballCount == 0){
       ballCount++;
     }
-    else if(!intakeSensor.get() && ballCount == 1){
-      ballCount--;
+    else if(intakeSensor.get() == false && ballCount == 1){
+      ballCount++;
     }
     return ballCount;
   }
