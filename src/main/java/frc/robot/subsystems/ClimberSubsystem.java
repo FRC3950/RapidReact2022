@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -18,16 +19,22 @@ public class ClimberSubsystem extends SubsystemBase {
   WPI_TalonFX master;
   WPI_TalonFX follower;
 
-  DoubleSolenoid whinch, pivot;
+  DoubleSolenoid winch, pivot;
 
   public ClimberSubsystem() {
     master = new WPI_TalonFX(Constants.master);
     follower = new WPI_TalonFX(Constants.follower);
 
-    whinch = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, Constants.winch[0], Constants.winch[1]);
+    winch = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, Constants.winch[0], Constants.winch[1]);
     pivot = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, Constants.pivot[0], Constants.pivot[1]);
 
     follower.follow(master);
+
+    master.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    follower.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+
+    master.setInverted(true);
+    follower.setInverted(true);
   }
 
   @Override
@@ -38,15 +45,15 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void setSolenoid(Value value){
-    whinch.set(value);
+    winch.set(value);
   }
 
   public void toggleSolenoid(){
-    if(whinch.get() == Value.kForward){
-      whinch.set(Value.kReverse);
+    if(winch.get() == Value.kForward){
+      winch.set(Value.kReverse);
     } 
     else {
-      whinch.set(Value.kForward);
+      winch.set(Value.kForward);
     }
   }
 
@@ -57,6 +64,17 @@ public class ClimberSubsystem extends SubsystemBase {
     else {
       pivot.set(Value.kForward);
     }
+  }
+
+  public double[] getEncoderCounts(){
+    return new double[]{
+      master.getSelectedSensorPosition(),
+      follower.getSelectedSensorPosition()
+    };
+  }
+
+  public void resetEncoderCount(){
+    master.getSensorCollection().setIntegratedSensorPosition(0, 0);
   }
 
 }

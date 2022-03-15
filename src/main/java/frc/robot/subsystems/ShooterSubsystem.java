@@ -23,17 +23,17 @@ public class ShooterSubsystem extends SubsystemBase {
   private final WPI_TalonSRX conveyor = new WPI_TalonSRX(Constants.conveyor);
 
   //private final DigitalInput sensor = new DigitalInput(Constants.sensor);
+  private final DigitalInput intakeSensor = new DigitalInput(0); 
 
-
-  private static final double kP_vel1 = 0.01, kP_vel2 = 0.01;
-  private static final double kI_vel1 = 0.000001, kI_vel2 = 0.000001;
-  private static final double kF= 0.047;
-  private static final double kD_vel1 = 0, kD_vel2 = 0;
+  private static final double kP_vel1 = 0.010005, kP_vel2 = 0.010005;
+  private static final double kI_vel1 = 0.0000009536743, kI_vel2 = 0.0000009536743;
+  private static final double kF= 0.0451;
+  private static final double kD_vel1 = 0.000006, kD_vel2 = 0.000006;
   private static final double closed_loop_ramp = 0.2;
-  public static final int internal_zone = 100; //likely not needed
+  //public static final int internal_zone = 100; //likely not needed
 
-  public int targetTopVelocity = 11000;
-  public int targetBottomVelocity = 10500;
+  public int targetTopVelocity = 10900;
+  public int targetBottomVelocity = 11400;
 
   private int decrements = 0;
   private int increments = 0;
@@ -60,8 +60,11 @@ public class ShooterSubsystem extends SubsystemBase {
     bottom.config_kI(0, kI_vel1);
     top.config_kI(0, kI_vel2);
 
-    bottom.configClosedloopRamp(closed_loop_ramp);
-    top.configClosedloopRamp(closed_loop_ramp);
+    bottom.config_kD(0, kD_vel1);
+    top.config_kD(0, kD_vel2);
+
+    // bottom.configClosedloopRamp(closed_loop_ramp);
+    // top.configClosedloopRamp(closed_loop_ramp);
 
   }
 
@@ -74,10 +77,9 @@ public class ShooterSubsystem extends SubsystemBase {
    *  @param t : Top motor velocity (Default: 10500)
    *  @param c : Conveyor speed (< 1.0) */
   
-  public void motorOn(double b, double t, double c){
+  public void motorOn(double b, double t){
     bottom.set(ControlMode.Velocity, b);
-    top.set(ControlMode.Velocity, t);
-    conveyor.set(c);    
+    top.set(ControlMode.Velocity, t);  
   }
 
   /** @return Returns double[] of target velocities (set w/ SmartDashboard) of bottom motor [0] and top motor [1]*/
@@ -117,6 +119,10 @@ public class ShooterSubsystem extends SubsystemBase {
     top.set(speed);
   }
 
+  public boolean getIntakeSensor(){
+    return intakeSensor.get();
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Bottom target velocity value", targetBottomVelocity);
@@ -124,5 +130,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Bottom shooter speed:", getCurrentVelocities()[0]);
     SmartDashboard.putNumber("Top shooter speed:", getCurrentVelocities()[1]);
+
+    
   }
 }

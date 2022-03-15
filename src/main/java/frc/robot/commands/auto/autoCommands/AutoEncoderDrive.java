@@ -33,6 +33,7 @@ public class AutoEncoderDrive extends CommandBase {
   @Override
   public void execute() {
     currentCount = drivetrain.getEncoderCount();
+    
     drivetrain.linearDrive(speed);
 
     finished = (currentCount >= count);

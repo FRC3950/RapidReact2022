@@ -18,21 +18,23 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. **/
 
-  private final DigitalInput intakeSensor = new DigitalInput(0); 
+ 
   private final DoubleSolenoid solenoid = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, 0,4); 
   private final WPI_TalonSRX intake = new WPI_TalonSRX(Constants.intake);
   // private final DoubleSolenoid solTest = new DoubleSolenoid(1,PneumaticsModuleType.REVPH, 6, 7)
 
-  public static int ballCount = 0;
-
+  // public static int ballCount = 0;
+// false = blocking 
   public IntakeSubsystem() {
     
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Intake", getSensor());
-    SmartDashboard.putNumber("Ball count", getBallCount());
+   // SmartDashboard.putBoolean("Intake", getSensor());
+    //SmartDashboard.putNumber("Ball count", getBallCount());
+    
+
   }
 
   public void intake(final double speed){
@@ -51,7 +53,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void toggleSolenoid(){
-    solenoid.toggle();
+    if(solenoid.get() == Value.kReverse){
+      solenoid.set(Value.kForward);
+    } else {
+      solenoid.set(Value.kReverse);
+    }
   }
 
   public void setSolenoid(final Value value){ 
@@ -64,17 +70,17 @@ public class IntakeSubsystem extends SubsystemBase {
     if(up == false) solenoid.set(Value.kReverse);
   }
 
-  public boolean getSensor(){
-    return intakeSensor.get();
-  }
+  // public boolean getSensor(){
+  //   return intakeSensor.get();
+  // }
 
-  public int getBallCount(){
-    if(intakeSensor.get() == false  && ballCount == 0){
-      ballCount++;
-    }
-    else if(intakeSensor.get() == false && ballCount == 1){
-      ballCount++;
-    }
-    return ballCount;
-  }
+  // public int getBallCount(){
+  //   if(intakeSensor.get() == false  && ballCount == 0){
+  //     ballCount++;
+  //   }
+  //   else if(intakeSensor.get() == false && ballCount == 1){
+  //     ballCount++;
+  //   }
+  //   return ballCount;
+  // }
 }

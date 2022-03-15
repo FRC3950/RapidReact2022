@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.teleop.*;
-import frc.robot.misc.ShooterMotorsOn;
 import frc.robot.commands.auto.autoCommands.*;
 import frc.robot.commands.auto.commandGroups.*;
 import frc.robot.subsystems.*;
@@ -36,7 +35,7 @@ public class RobotContainer {
 
 
   //Auto commands:
-  private final AutoEncoderDrive autoEncoderDrive = new AutoEncoderDrive(200000, 0.5, drivetrain);
+  private final AutoEncoderDrive autoEncoderDrive = new AutoEncoderDrive(100000, 0.75, drivetrain);
   private final AutoShootCommand autoShootCommand = new AutoShootCommand(shooterSubsystem, 6);
 
   //Command groups:
@@ -67,7 +66,7 @@ public class RobotContainer {
     );
 
     climberSubsystem.setDefaultCommand(
-      new ClimberCommand(climberSubsystem, xboxController::getRightY)
+      new ClimberCommand(xboxController::getRightY, climberSubsystem)
     );
   }
   
@@ -80,7 +79,7 @@ public class RobotContainer {
       .whileHeld(outtakeCommand);
 
     new JoystickButton(xboxController, XboxController.Button.kB.value)
-      .whenPressed(() -> intakeSubsystem.setSolenoid(Value.kForward));
+      .whenPressed(intakeSubsystem::toggleSolenoid);
 
 
     new JoystickButton(xboxController, XboxController.Button.kX.value)
@@ -93,13 +92,12 @@ public class RobotContainer {
       .whenPressed(shooterSubsystem::incrementTargetVelocity);
 
 
-    // new JoystickButton(xboxController, XboxController.Axis.kRightY.value)
-    //   .whileHeld(climberCommand);
-
     new JoystickButton(xboxController, XboxController.Button.kY.value)
       .whenPressed(climberSubsystem::togglePivot);
 
-    
+    new JoystickButton(xboxController, 8)
+      .whenPressed(climberSubsystem::toggleSolenoid);
+
     //Joystick buttons:
     new JoystickButton(drivestick, 5)
       .whenPressed(drivetrain::toggleDriveGear);

@@ -19,7 +19,7 @@ public class ShootCommand extends CommandBase {
   double targetspeedB, targetspeedT;
   double currentspeedB, currentSpeedT;
 
-  
+
   public ShootCommand(ShooterSubsystem shooter) {
     this.shooter = shooter;
     addRequirements(shooter);
@@ -30,7 +30,9 @@ public class ShootCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -42,23 +44,21 @@ public class ShootCommand extends CommandBase {
     currentspeedB = Math.abs(shooter.getCurrentVelocities()[0]);
     currentSpeedT = Math.abs(shooter.getCurrentVelocities()[1]);
     
+
+    shooter.motorOn(-targetspeedB, -targetspeedT);
   
-    if(currentspeedB >= targetspeedB - 200 && currentspeedB <= targetspeedB + 200 
-    && currentSpeedT >= targetspeedT - 200 && currentSpeedT <= targetspeedT + 200){
-      System.out.println(targetspeedB);
-      System.out.println(currentspeedB);
-      shooter.motorOn(-targetspeedB, -targetspeedT, 0.95);
-    }
-    else{
-      shooter.motorOn(-targetspeedB, -targetspeedT, 0.0);
-    }
+    if(currentspeedB >= targetspeedB - 300 && currentspeedB <= targetspeedB + 300 
+    && currentSpeedT >= targetspeedT - 300 && currentSpeedT <= targetspeedT + 300){
+      shooter.setConveyor(0.95);
+    }  
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.motorOn(0, 0, 0);
-    IntakeSubsystem.ballCount = 0;
+    shooter.motorOn(0, 0);
+    shooter.setConveyor(0.0);
+    //IntakeSubsystem.ballCount = 0; //3/14
   }
 
   // Returns true when the command should end.

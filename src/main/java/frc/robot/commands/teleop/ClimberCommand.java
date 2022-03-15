@@ -6,15 +6,22 @@ package frc.robot.commands.teleop;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimberSubsystem;
 
 public class ClimberCommand extends CommandBase {
   /** Creates a new ClimberCommand. */
-  ClimberSubsystem climber;
-  DoubleSupplier y;
-  public ClimberCommand(ClimberSubsystem climber, DoubleSupplier y) {
+  private final ClimberSubsystem climber;
+  private final DoubleSupplier y;
+
+  private final DigitalInput rightLimitSwitch = new DigitalInput(1);
+  private final DigitalInput leftLimitSwitch = new DigitalInput(2);
+
+  private boolean islimitRight, islimitLeft;
+
+  public ClimberCommand(DoubleSupplier y, ClimberSubsystem climber) {
     this.climber = climber;
     this.y = y;
     addRequirements(climber);
@@ -22,13 +29,27 @@ public class ClimberCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    climber.setSolenoid(Value.kReverse);
+    climber.resetEncoderCount();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climber.setSolenoid(Value.kReverse); //Inverted
-    climber.setMotors(y.getAsDouble());
+    
+      if(y.getAsDouble() > 0.1/**add encoder later */){
+        climber.setSolenoid(Value.kReverse);
+        climber.setMotors(y.getAsDouble());
+      }
+      else if(y.getAsDouble() < -0.1 && rightLimitSwitch.get() && leftLimitSwitch.get()){
+        climber.setSolenoid(Value.kReverse);
+        climber.setMotors(y.getAsDouble());
+      }
+      else{
+        climber.setSolenoid(Value.kForward);
+        climber.setMotors(0.0);
+      }
   }
 
   // Called once the command ends or is interrupted.

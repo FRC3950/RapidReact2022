@@ -21,7 +21,7 @@ public class DriveSequence extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new AutoShootCommand(shooter, 2.5),
-      new AutoEncoderDrive(10000, 0.75, drivetrain)
+      new AutoEncoderDrive(200000, 0.75, drivetrain)
     );
   }
 }

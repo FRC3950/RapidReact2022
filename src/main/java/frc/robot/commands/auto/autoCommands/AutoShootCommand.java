@@ -5,6 +5,7 @@
 package frc.robot.commands.auto.autoCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -35,6 +36,7 @@ public class AutoShootCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    currentTime = timer.get();
 
     targetspeedB = Math.abs(shooter.getTargetVelocities()[0]);
     targetspeedT = Math.abs(shooter.getTargetVelocities()[1]);
@@ -42,21 +44,19 @@ public class AutoShootCommand extends CommandBase {
     currentspeedB = Math.abs(shooter.getCurrentVelocities()[0]);
     currentSpeedT = Math.abs(shooter.getCurrentVelocities()[1]);
 
-    if(currentspeedB >= targetspeedB - 200 && currentspeedB <= targetspeedB + 200 
-    && currentSpeedT >= targetspeedT - 200 && currentSpeedT <= targetspeedT + 200){
-      System.out.println(targetspeedB);
-      System.out.println(currentspeedB);
-      shooter.motorOn(-targetspeedB, -targetspeedT, 0.95);
-    }
-    else{
-      shooter.motorOn(-targetspeedB, -targetspeedT, 0.0);
-    }
+    shooter.motorOn(-targetspeedB, -targetspeedT);
+  
+    if(currentspeedB >= targetspeedB - 300 && currentspeedB <= targetspeedB + 300 
+    && currentSpeedT >= targetspeedT - 300 && currentSpeedT <= targetspeedT + 300){
+      shooter.setConveyor(0.95);
+    }  
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.motorOn(0, 0, 0);
+    shooter.motorOn(0, 0);
+    shooter.setConveyor(0.0);
   }
 
   // Returns true when the command should end.

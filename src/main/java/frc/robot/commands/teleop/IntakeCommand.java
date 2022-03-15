@@ -13,24 +13,32 @@ public class IntakeCommand extends CommandBase {
   /** Creates a new IntakeCommand. */
   IntakeSubsystem intake; 
   ShooterSubsystem shooter;
+  boolean ballLoaded = false;
   public IntakeCommand(IntakeSubsystem intake, ShooterSubsystem shooter) {
     this.intake = intake;
     this.shooter = shooter;
+    
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     intake.setSolenoid(Value.kReverse);
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(intake.getBallCount() < 1){
-      intake.intake(0.7);
-      shooter.setConveyor(0.0);
-    }
+    intake.intake(0.7);
+    
+    //shooter.setConveyor(0.0);
+    // if(shooter.getIntakeSensor() == false){
+    //   shooter.setConveyor(0.3);
+     
+    // }
+
+
   }
 
   // Called once the command ends or is interrupted.
