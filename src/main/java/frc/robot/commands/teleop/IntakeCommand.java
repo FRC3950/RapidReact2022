@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.misc.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -28,55 +29,14 @@ public class IntakeCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.setSolenoid(Value.kReverse);
+    if(!(!shooter.getSensorValues()[0] && !shooter.getSensorValues()[1])){
+      intake.setSolenoid(Constants.States.DOWN);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    intake.intake(0.7);
-
-    // shooter.setConveyor(0.5);
-    // if (numBalls  < 1){
-    //   if(!shooter.getIntakeSensor()){
-    //     System.out.println("There is a ball on the sensor");
-    //     ballLoaded = true;
-    //     shooter.setConveyor(0.5);
-    //   }
-    //   if (shooter.getIntakeSensor() && ballLoaded){
-    //     shooter.setConveyor(0);
-    //     ballLoaded = false;
-    //     numBalls++;
-    //   }
-    // }
-
-    // if(shooter.getIntakeSensor()){ 
-    //   shooter.setConveyor(0.5);
-    // } 
-    // else {
-    //   shooter.setConveyor(0);
-    // }
-
-    // if(shooter.getColor() == Color.kBlue || shooter.getColor() == Color.kRed){
-    //   shooter.setConveyor(0);
-    // } 
-    // else{
-    //   shooter.setConveyor(0.5);
-    // }
-    // System.out.println(shooter.getColor());
-
-    // if(SmartDashboard.getString("Deteced Color", "Unknown").equals("red")|| SmartDashboard.getString("Deteced Color", "Unknown").equals("blue")){
-
-    //   shooter.setConveyor(0);
-
-    // }
-
-    // if(shooter.colorString.equals("red") || shooter.colorString.equals("blue")){
-    //   shooter.setConveyor(0.0);
-    // }
-
-
 
 
     //No balls
@@ -106,7 +66,7 @@ public class IntakeCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.setSolenoid(Value.kForward); //inverted
+    intake.setSolenoid(Constants.States.UP); //inverted
     intake.intake(0);
     shooter.setConveyor(0);
     shooter.setIndexer(0);

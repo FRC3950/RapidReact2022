@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.misc.Constants;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -35,6 +36,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
   //private final DoubleSolenoid sol = new DoubleSolenoid(PneumaticsModuleType.REVPH, forwardChannel, reverseChannel)
   private final DoubleSolenoid solenoid = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, 1, 5);
   private final Timer time = new Timer();
+
+  private final SlewRateLimiter filterTwist = new SlewRateLimiter(0.5);
+  private final SlewRateLimiter filterX = new SlewRateLimiter(0.8);
 
   private double s, count; //Time (s) and encoder count
   private double angle;
@@ -138,6 +142,5 @@ public class DrivetrainSubsystem extends SubsystemBase {
     time.reset(); 
     time.start();
   }
-
   //Josh was here
 }

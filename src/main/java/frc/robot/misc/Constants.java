@@ -4,6 +4,8 @@
 
 package frc.robot.misc;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -43,5 +45,15 @@ public final class Constants {
 
     public static int master = 6;
     public static int follower = 5;
+
+//Solenoid States:
+
+    public static class States{
+        public static Value UP = Value.kReverse;
+        public static Value DOWN = Value.kForward;
+
+        public static Value HIGH = Value.kForward;
+        public static Value LOW = Value.kReverse;
+    }
 
 }
