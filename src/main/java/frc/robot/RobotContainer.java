@@ -11,10 +11,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.teleop.*;
-import frc.robot.commands.teleop.shootCommands.FarShootCommand;
-import frc.robot.commands.teleop.shootCommands.HailMaryShootCommand;
-import frc.robot.commands.teleop.shootCommands.LowShootCommand;
-import frc.robot.commands.teleop.shootCommands.ShootCommand;
 import frc.robot.commands.auto.autoCommands.*;
 import frc.robot.commands.auto.commandGroups.*;
 import frc.robot.subsystems.*;
@@ -34,14 +30,14 @@ public class RobotContainer {
 
   //Commands:
   private final IntakeCommand intakeCommand = new IntakeCommand(intakeSubsystem, shooterSubsystem);
-  private final ToggleSolenoidCommand toggle = new ToggleSolenoidCommand(intakeSubsystem);
-  private final ShootCommand shootCommand = new ShootCommand(shooterSubsystem, intakeSubsystem);
-  private final LowShootCommand lowShootCommand = new LowShootCommand(shooterSubsystem, intakeSubsystem);
-  private final FarShootCommand farShootCommand = new FarShootCommand(shooterSubsystem, intakeSubsystem);
-  private final HailMaryShootCommand hailMaryShootCommand = new HailMaryShootCommand(shooterSubsystem, intakeSubsystem);
   private final OuttakeCommand outtakeCommand = new OuttakeCommand(shooterSubsystem, intakeSubsystem);
-  private final CenterCommand centerCommand = new CenterCommand(drivetrain);
 
+  private final ShootCommand shootCommand = new ShootCommand(11027, 9990, shooterSubsystem, intakeSubsystem);
+  private final ShootCommand lowShootCommand = new ShootCommand(8500, 3495, shooterSubsystem, intakeSubsystem);
+  private final ShootCommand farShootCommand = new ShootCommand(13027, 11990, shooterSubsystem, intakeSubsystem);
+  private final ShootCommand hailMaryShootCommand = new ShootCommand(15833, 19000, shooterSubsystem, intakeSubsystem);
+
+  private final CenterCommand centerCommand = new CenterCommand(drivetrain);
 
   //Auto commands:
   private final AutoEncoderDrive autoEncoderDrive = new AutoEncoderDrive(100000, 0.75, drivetrain);

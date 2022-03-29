@@ -26,7 +26,6 @@ public class ShooterSubsystem extends SubsystemBase {
   /**
    *
    */
-  private static final int _1 = 1;
   /** Creates a new ShooterSubsystem. */
 
   private final WPI_TalonFX bottom = new WPI_TalonFX(Constants.bottom);
@@ -45,8 +44,6 @@ public class ShooterSubsystem extends SubsystemBase {
   //private final I2C.Port i2cPort = I2C.Port.kOnboard;
   //private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
   //private final ColorMatch m_colorMatcher = new ColorMatch();
-
-
   private static final double kP_vel1 = 0.010005, kP_vel2 = 0.010005;
   private static final double kI_vel1 = 0.0000009536743, kI_vel2 = 0.0000009536743;
   private static final double kF= 0.0451;
@@ -56,7 +53,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public int targetTopVelocity = 9990; 
   public int targetBottomVelocity = 11027; 
 
-  public static int ballCount;
  // public static String colorString;
 
   //private final Color kBlueTarget = new Color(0.193, 0.436, 0.370);
@@ -96,23 +92,16 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void motorOn(){
-    bottom.set(ControlMode.Velocity, 11000);
-    top.set(ControlMode.Velocity, 10500);
+    bottom.set(ControlMode.Velocity, 11027);
+    top.set(ControlMode.Velocity, 9990);
   }
 
-  /** @param b : Bottom motor velocity (Default: 11000)
-   *  @param t : Top motor velocity (Default: 10500) */
+  /** @param b : Bottom motor velocity (Default: 11027)
+   *  @param t : Top motor velocity (Default: 9990) */
   
   public void motorOn(double b, double t){
     bottom.set(ControlMode.Velocity, b);
     top.set(ControlMode.Velocity, t);  
-  }
-
-  /** @return Returns double[] of target velocities of bottom motor [0] and top motor [1]*/
-  public double[] getTargetVelocities(){
-    return new double[]{
-      targetBottomVelocity, targetTopVelocity
-    };
   }
 
   public double[] getCurrentVelocities(){
@@ -174,22 +163,8 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Indexer", irBeams[0].get());
     SmartDashboard.putBoolean("Conveyor", irBeams[1].get());
 
-    //targetBottomVelocity = (int) SmartDashboard.getNumber("Bottom target velocity value", targetBottomVelocity);
-    //targetTopVelocity = (int) SmartDashboard.getNumber("Top target velocity value", targetTopVelocity);
-
     SmartDashboard.putNumber("Bottom shooter actual speed:", getCurrentVelocities()[0]);
     SmartDashboard.putNumber("Top shooter actual speed:", getCurrentVelocities()[1]);
-    
-    SmartDashboard.putNumber("Bottom target velocity value", getTargetVelocities()[0]);
-    SmartDashboard.putNumber("Top target velocity value", getTargetVelocities()[1]);
 
-    SmartDashboard.putNumber("Ball count", ballCount);
-
-    // SmartDashboard.putBoolean("Ball Loaded - (red/false full): ", getIntakeSensor());
-
-    //Color detectedColor = colorSensor.getColor();
-    //ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
-
-    SmartDashboard.putBooleanArray("Breaker beams", getSensorValues());
   }
 }

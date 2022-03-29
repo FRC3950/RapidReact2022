@@ -25,17 +25,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // public static int ballCount = 0;
 // false = blocking 
-  public IntakeSubsystem() {
-    
-  }
+  public IntakeSubsystem() {}
 
   @Override
-  public void periodic() {
-   // SmartDashboard.putBoolean("Intake", getSensor());
-    //SmartDashboard.putNumber("Ball count", getBallCount());
-    
-
-  }
+  public void periodic() {}
 
   public void intake(final double speed){
     if(/*!intakeSensor.get() &&*/ intake.getSupplyCurrent() < 100.00){ //Need to find real current when jamming
