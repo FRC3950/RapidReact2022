@@ -40,6 +40,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final SlewRateLimiter filterTwist = new SlewRateLimiter(0.5);
   private final SlewRateLimiter filterX = new SlewRateLimiter(0.8);
 
+  private double xRateLimiter = 0.8;
+  private double twistRateLimiter = 0.5;
+
   private double s, count; //Time (s) and encoder count
   private double angle;
   private int direction = 1;
@@ -103,7 +106,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       m_drive.arcadeDrive(x * direction * .5, -y * direction * .5);
     }
     else {
-      m_drive.arcadeDrive(x * direction, -y * direction);
+      m_drive.arcadeDrive(filterX.calculate(x * direction), filterTwist.calculate(-y * direction));
     } 
   }
   public void linearDrive(double speed){
@@ -142,5 +145,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     time.reset(); 
     time.start();
   }
+
   //Josh was here
 }
