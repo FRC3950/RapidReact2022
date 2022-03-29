@@ -14,14 +14,15 @@ import frc.robot.commands.auto.commandGroups.*;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class DriveSequence extends SequentialCommandGroup {
+public class TwoBallAutoSequence extends SequentialCommandGroup {
   /** Creates a new DriveSequence. */
-  public DriveSequence(DrivetrainSubsystem drivetrain, ShooterSubsystem shooter) {
+  public TwoBallAutoSequence(DrivetrainSubsystem drivetrain, ShooterSubsystem shooter, IntakeSubsystem intake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new AutoShootCommand(shooter, 2.5),
-      new AutoEncoderDrive(200000, 0.75, drivetrain)
+      new AutoShootCommand(11027, 9990, 2.0, shooter),
+      new IntakeDrive(drivetrain, shooter, intake), //Encoder count: 40000
+      new AutoShootCommand(12557.83, 15327.57, 4.0, shooter)
     );
   }
 }

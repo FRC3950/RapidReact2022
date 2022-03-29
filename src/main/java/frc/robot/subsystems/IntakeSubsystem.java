@@ -70,9 +70,9 @@ public class IntakeSubsystem extends SubsystemBase {
     if(up == false) solenoid.set(Value.kReverse);
   }
 
-  // public boolean getSensor(){
-  //   return intakeSensor.get();
-  // }
+  //public boolean getSensor(){
+   //return intakeSensor.get();
+   //}
 
   // public int getBallCount(){
   //   if(intakeSensor.get() == false  && ballCount == 0){

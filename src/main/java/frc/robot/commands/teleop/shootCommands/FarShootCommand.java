@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.teleop;
+package frc.robot.commands.teleop.shootCommands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,21 +11,19 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class ShootCommand extends CommandBase {
+public class FarShootCommand extends CommandBase {
   /** Creates a new ShootCommand. */
   ShooterSubsystem shooter;
-  private final Timer timer = new Timer();
+  IntakeSubsystem intake;
   
   double targetspeedB, targetspeedT;
   double currentspeedB, currentSpeedT;
 
 
-  public ShootCommand(ShooterSubsystem shooter) {
+  public FarShootCommand(ShooterSubsystem shooter, IntakeSubsystem intake) {
     this.shooter = shooter;
+    this.intake = intake;
     addRequirements(shooter);
-
-    SmartDashboard.putNumber("Top shooter speed:", shooter.getTargetVelocities()[1]);
-    SmartDashboard.putNumber("Bottom shooter speed:", shooter.getTargetVelocities()[0]);
   }
 
   // Called when the command is initially scheduled.
@@ -38,18 +36,25 @@ public class ShootCommand extends CommandBase {
   @Override
   public void execute() {
 
-    targetspeedB = Math.abs(shooter.getTargetVelocities()[0]);
-    targetspeedT = Math.abs(shooter.getTargetVelocities()[1]);
+    targetspeedB = 13027;
+    targetspeedT = 11990;
 
     currentspeedB = Math.abs(shooter.getCurrentVelocities()[0]);
     currentSpeedT = Math.abs(shooter.getCurrentVelocities()[1]);
     
 
     shooter.motorOn(-targetspeedB, -targetspeedT);
+    // shooter.setConveyor(0.5);
+    // shooter.setIndexer(0.5);
   
-    if(currentspeedB >= targetspeedB - 300 && currentspeedB <= targetspeedB + 300 
-    && currentSpeedT >= targetspeedT - 300 && currentSpeedT <= targetspeedT + 300){
-      shooter.setConveyor(0.95);
+    if(currentspeedB >= targetspeedB - 500 && currentspeedB <= targetspeedB + 500 
+    && currentSpeedT >= targetspeedT - 500 && currentSpeedT <= targetspeedT + 500){
+      
+      if(shooter.getSensorValues()[0] == true){
+        shooter.setConveyor(0.7);
+      }
+      
+      shooter.setIndexer(0.5);
     }  
   }
 
@@ -58,7 +63,8 @@ public class ShootCommand extends CommandBase {
   public void end(boolean interrupted) {
     shooter.motorOn(0, 0);
     shooter.setConveyor(0.0);
-    //IntakeSubsystem.ballCount = 0; //3/14
+    intake.intake(0);
+    shooter.setIndexer(0);
   }
 
   // Returns true when the command should end.

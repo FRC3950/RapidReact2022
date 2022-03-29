@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -20,6 +21,9 @@ public class ClimberSubsystem extends SubsystemBase {
   WPI_TalonFX follower;
 
   DoubleSolenoid winch, pivot;
+
+  private final DigitalInput rightLimitSwitch = new DigitalInput(1);
+  private final DigitalInput leftLimitSwitch = new DigitalInput(2);
 
   public ClimberSubsystem() {
     master = new WPI_TalonFX(Constants.master);
@@ -38,7 +42,12 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    SmartDashboard.putBoolean("CLIMBER LOCK", getLock());
+    SmartDashboard.putString("Climber solenoid", winch.get().toString());
+    SmartDashboard.putNumber("Climber encoder count", getEncoderCounts()[0]);
+    
+  }
 
   public void setMotors(double speed){
     master.set(speed);
@@ -49,20 +58,20 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void toggleSolenoid(){
-    if(winch.get() == Value.kForward){
-      winch.set(Value.kReverse);
-    } 
-    else {
+    if(winch.get() == Value.kReverse){
       winch.set(Value.kForward);
+    }
+    else if(winch.get() != Value.kReverse){
+      winch.set(Value.kReverse);
     }
   }
 
   public void togglePivot(){
-    if(pivot.get() == Value.kForward){
-      pivot.set(Value.kReverse);
-    } 
-    else {
+    if(pivot.get() == Value.kReverse){
       pivot.set(Value.kForward);
+    } 
+    else if(pivot.get() != Value.kReverse){
+      pivot.set(Value.kReverse);
     }
   }
 
@@ -71,6 +80,17 @@ public class ClimberSubsystem extends SubsystemBase {
       master.getSelectedSensorPosition(),
       follower.getSelectedSensorPosition()
     };
+  }
+
+  public boolean[] getSensorValues(){
+    return new boolean[] {
+      rightLimitSwitch.get(),
+      leftLimitSwitch.get()
+    };
+  }
+
+  public boolean getLock(){
+    return (winch.get() == Value.kForward);
   }
 
   public void resetEncoderCount(){

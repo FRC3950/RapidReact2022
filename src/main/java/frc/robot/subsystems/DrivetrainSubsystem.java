@@ -18,6 +18,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.*;
 
+
 public class DrivetrainSubsystem extends SubsystemBase {
   /** Creates a new DrivetrainSubsystem. */
   private final WPI_TalonFX leftM = new WPI_TalonFX(Constants.leftM);
@@ -37,6 +38,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private double s, count; //Time (s) and encoder count
   private double angle;
+  private int direction = 1;
+
+  private boolean speedIsHalved = false;
+  private boolean driveIsInverted = false;
 
 
   public DrivetrainSubsystem() {
@@ -46,9 +51,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     leftS.follow(leftM);
     rightS.follow(rightM);
-
-
-
 
     m_drive = new DifferentialDrive(leftM, rightM);
 
@@ -69,6 +71,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     count = getEncoderCount();
     SmartDashboard.putNumber("Encoder Front Left: ", count);
     SmartDashboard.putNumber("Yaw angle", getAngle());
+
+    SmartDashboard.putBoolean("DRIVE INVERTED (GREEN = TRUE)", driveIsInverted);
+    SmartDashboard.putBoolean("DRIVE SPEED HALVED (GREEN = TRUE)", speedIsHalved);
   }
 
   public void toggleDriveGear(){
@@ -90,7 +95,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // }
 
   public void teleDrive(double x, double y){
-    m_drive.arcadeDrive(x, -y);
+    if(speedIsHalved){
+      m_drive.arcadeDrive(x * direction * .5, -y * direction * .5);
+    }
+    else {
+      m_drive.arcadeDrive(x * direction, -y * direction);
+    } 
   }
   public void linearDrive(double speed){
     m_drive.arcadeDrive(0, speed);
@@ -98,7 +108,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void turn(double speed){
     m_drive.arcadeDrive(speed, 0);
   }
- 
+  public void toggleInvertDrive(){
+    direction *= -1;
+    driveIsInverted = !driveIsInverted;
+  }
+  public void toggleHalvedSpeed(){
+    speedIsHalved = !speedIsHalved;
+  }
 
   public void setEncoderCount(double count){
     leftM.getSensorCollection().setIntegratedSensorPosition(count, 0);
@@ -107,7 +123,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return leftM.getSelectedSensorPosition();
   }
   
-
+  //Gyro and timer stuff: 
   public double getAngle(){
     return gyro.getAngle();
   }
@@ -115,7 +131,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     gyro.reset();
   }
 
-  public double getTime(){ return time.get(); }
+  public double getTime(){ 
+    return time.get(); 
+  }
   public void restartTime(){ 
     time.reset(); 
     time.start();

@@ -19,12 +19,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private Compressor compressor;
 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
+  
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our

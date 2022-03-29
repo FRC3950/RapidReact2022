@@ -12,6 +12,7 @@ public class OuttakeCommand extends CommandBase {
   /** Creates a new OuttakeCommand. */
   private final ShooterSubsystem shooter;
   private final IntakeSubsystem intake;
+  
   public OuttakeCommand(ShooterSubsystem shooter, IntakeSubsystem intake) {
     this.shooter = shooter;
     this.intake = intake;

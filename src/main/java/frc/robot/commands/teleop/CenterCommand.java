@@ -11,6 +11,7 @@ public class CenterCommand extends CommandBase {
   /** Creates a new CenterCommand. */
   private final DrivetrainSubsystem drivetrain;
   private boolean withinRange = false;
+  
   public CenterCommand(DrivetrainSubsystem drivetrain) {
     this.drivetrain = drivetrain;
     addRequirements(drivetrain);
