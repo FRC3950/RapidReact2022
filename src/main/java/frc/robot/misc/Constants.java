@@ -55,5 +55,4 @@ public final class Constants {
         public static Value HIGH = Value.kForward;
         public static Value LOW = Value.kReverse;
     }
-
 }

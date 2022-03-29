@@ -62,18 +62,4 @@ public class IntakeSubsystem extends SubsystemBase {
     if(up) solenoid.set(Value.kForward);
     if(up == false) solenoid.set(Value.kReverse);
   }
-
-  //public boolean getSensor(){
-   //return intakeSensor.get();
-   //}
-
-  // public int getBallCount(){
-  //   if(intakeSensor.get() == false  && ballCount == 0){
-  //     ballCount++;
-  //   }
-  //   else if(intakeSensor.get() == false && ballCount == 1){
-  //     ballCount++;
-  //   }
-  //   return ballCount;
-  // }
 }
