@@ -15,21 +15,33 @@ package frc.robot.misc;
 public final class Constants {
     
 //Drivetrain
-    public static int leftM = 1;
-    public static int leftS = 15;
+    public static int leftM = 0;
+    public static int leftS = 1;
     public static int rightM = 2;
-    public static int rightS = 14;
+    public static int rightS = 3;
 
-    public static int[] sol = {6,6}; //Solenoid
+    public static int[] driveSol = {1,5}; //Solenoid
 
     public static final double kWidthMeters = 0.5;
 
 //Conveyor
-    public static int conveyor = 5;
-    public static int sensor = 6;
+    public static int conveyor = 4;
+    public static int indexer = 19;
+    public static int sensor = 1;
 
 //Shooter 
-    public static int top = 3;
-    public static int bottom = 12;
+    public static int top = 8;
+    public static int bottom = 7;
+
+//Intake
+    public static int intake = 9;
+    public static int[] solenoid = {0,4};
+
+//Climber
+    public static int[] winch = {2,6};
+    public static int[] pivot = {3,7};
+
+    public static int master = 6;
+    public static int follower = 5;
 
 }

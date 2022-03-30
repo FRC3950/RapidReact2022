@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.misc.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 
@@ -17,34 +18,39 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. **/
 
-  private final DigitalInput intakeSensor = new DigitalInput(0); //Placeholder, also might need to make public in future
-  private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 6,7); 
-  private final WPI_TalonSRX intake = new WPI_TalonSRX(10);
+ 
+  private final DoubleSolenoid solenoid = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, 0,4); 
+  private final WPI_TalonSRX intake = new WPI_TalonSRX(Constants.intake);
+  // private final DoubleSolenoid solTest = new DoubleSolenoid(1,PneumaticsModuleType.REVPH, 6, 7)
 
+  // public static int ballCount = 0;
+// false = blocking 
   public IntakeSubsystem() {}
 
   @Override
-  public void periodic() {
-    SmartDashboard.putBoolean("Intake", getSensor());
-  }
+  public void periodic() {}
 
   public void intake(final double speed){
-    if(!intakeSensor.get() && intake.getSupplyCurrent() < 15.00){ //Need to find real current when jamming
+    if(/*!intakeSensor.get() &&*/ intake.getSupplyCurrent() < 100.00){ //Need to find real current when jamming
       intake.set(speed);
     }
-    else if(intake.getSupplyCurrent() >= 15.00){ 
+    else if(intake.getSupplyCurrent() >= 100.00){ 
       outtake(0.5);
     }
   }
 
   /** @param speed (can be pos. or neg.) */ 
   public void outtake(double speed){
-    if(speed > 0.0) speed *= -1;
+    speed = -Math.abs(speed);
     intake.set(speed);
   }
 
   public void toggleSolenoid(){
-    solenoid.toggle();
+    if(solenoid.get() == Value.kReverse){
+      solenoid.set(Value.kForward);
+    } else {
+      solenoid.set(Value.kReverse);
+    }
   }
 
   public void setSolenoid(final Value value){ 
@@ -54,10 +60,20 @@ public class IntakeSubsystem extends SubsystemBase {
   /** @param up - kForward if true and kReverse if false */
   public void setSolenoid(boolean up){
     if(up) solenoid.set(Value.kForward);
-    if(!up) solenoid.set(Value.kReverse);
+    if(up == false) solenoid.set(Value.kReverse);
   }
 
-  public boolean getSensor(){
-    return intakeSensor.get();
-  }
+  //public boolean getSensor(){
+   //return intakeSensor.get();
+   //}
+
+  // public int getBallCount(){
+  //   if(intakeSensor.get() == false  && ballCount == 0){
+  //     ballCount++;
+  //   }
+  //   else if(intakeSensor.get() == false && ballCount == 1){
+  //     ballCount++;
+  //   }
+  //   return ballCount;
+  // }
 }

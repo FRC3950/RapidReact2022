@@ -12,41 +12,56 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.misc.Constants;
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.*;
 
+
 public class DrivetrainSubsystem extends SubsystemBase {
   /** Creates a new DrivetrainSubsystem. */
-  private final WPI_TalonFX leftM = new WPI_TalonFX(1);
-  private final WPI_TalonFX leftS = new WPI_TalonFX(15);
+  private final WPI_TalonFX leftM = new WPI_TalonFX(Constants.leftM);
+  private final WPI_TalonFX leftS = new WPI_TalonFX(Constants.leftS);
 
-  private final WPI_TalonFX rightM = new WPI_TalonFX(2);
-  private final WPI_TalonFX rightS = new WPI_TalonFX(14);
+  private final WPI_TalonFX rightM = new WPI_TalonFX(Constants.rightM);
+  private final WPI_TalonFX rightS = new WPI_TalonFX(Constants.rightS);
 
   private final DifferentialDrive m_drive;
 
-  //private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.sol[0], Constants.sol[1]);
+  private static final ADIS16470_IMU gyro = new ADIS16470_IMU();
+
+
+  //private final DoubleSolenoid sol = new DoubleSolenoid(PneumaticsModuleType.REVPH, forwardChannel, reverseChannel)
+  private final DoubleSolenoid solenoid = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, 1, 5);
   private final Timer time = new Timer();
 
   private double s, count; //Time (s) and encoder count
-  private int angle;
+  private double angle;
+  private int direction = 1;
+
+  private boolean speedIsHalved = false;
+  private boolean driveIsInverted = false;
 
 
   public DrivetrainSubsystem() {
 
+    leftM.setNeutralMode(NeutralMode.Coast);
+    rightM.setNeutralMode(NeutralMode.Coast);
+
     leftS.follow(leftM);
     rightS.follow(rightM);
-
-    leftM.setNeutralMode(NeutralMode.Brake);
-    rightM.setNeutralMode(NeutralMode.Brake);
 
     m_drive = new DifferentialDrive(leftM, rightM);
 
     leftM.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     rightM.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-    //PID stuff might go here
+    setEncoderCount(0);
+
+    gyro.calibrate();
+
+    solenoid.set(Value.kForward);
+
   }
 
   @Override
@@ -54,21 +69,51 @@ public class DrivetrainSubsystem extends SubsystemBase {
     //SmartDashboard.putBoolean("Shift:", getShift());
     s = getTime();
     count = getEncoderCount();
+    SmartDashboard.putNumber("Encoder Front Left: ", count);
+    SmartDashboard.putNumber("Yaw angle", getAngle());
+
+    SmartDashboard.putBoolean("DRIVE INVERTED (GREEN = TRUE)", driveIsInverted);
+    SmartDashboard.putBoolean("DRIVE SPEED HALVED (GREEN = TRUE)", speedIsHalved);
   }
 
-  // public void shift(){
-  //   solenoid.toggle(); //Might have 2 solenoids
-  // }
+  public void toggleDriveGear(){
+    if(solenoid.get() == Value.kReverse){
+      solenoid.set(Value.kForward);
+    }
+    else if(solenoid.get() != Value.kReverse){
+      solenoid.set(Value.kReverse);
+    }
+  }
 
-  // public void shift(final Value val){
-  //   solenoid.set(val);
+  public void shiftBack(){
+    solenoid.set(Value.kReverse);
+
+  }
+  // public boolean getShift(){
+  //   boolean shift = (solenoid.get() == Value.kForward);
+  //   return shift;
   // }
 
   public void teleDrive(double x, double y){
-    m_drive.arcadeDrive(x, y);
+    if(speedIsHalved){
+      m_drive.arcadeDrive(x * direction * .5, -y * direction * .5);
+    }
+    else {
+      m_drive.arcadeDrive(x * direction, -y * direction);
+    } 
   }
   public void linearDrive(double speed){
+    m_drive.arcadeDrive(0, speed);
+  }
+  public void turn(double speed){
     m_drive.arcadeDrive(speed, 0);
+  }
+  public void toggleInvertDrive(){
+    direction *= -1;
+    driveIsInverted = !driveIsInverted;
+  }
+  public void toggleHalvedSpeed(){
+    speedIsHalved = !speedIsHalved;
   }
 
   public void setEncoderCount(double count){
@@ -77,22 +122,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public double getEncoderCount(){ 
     return leftM.getSelectedSensorPosition();
   }
-
-  public void setAngle(int target){
-    target = angle;
+  
+  //Gyro and timer stuff: 
+  public double getAngle(){
+    return gyro.getAngle();
   }
-  public int getAngle(){
-    return angle;
+  public void resetAngle(){
+    gyro.reset();
   }
 
-  public double getTime(){ return time.get(); }
+  public double getTime(){ 
+    return time.get(); 
+  }
   public void restartTime(){ 
     time.reset(); 
     time.start();
   }
+
   //Josh was here
-  // public boolean getShift(){
-  //   boolean shift = (solenoid.get() == Value.kForward);
-  //   return shift;
-  // }
 }

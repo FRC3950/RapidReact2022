@@ -9,38 +9,65 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+//import com.revrobotics.ColorMatch;
+//import com.revrobotics.ColorMatchResult;
+//import com.revrobotics.ColorSensorV3;
+//import com.revrobotics.ColorSensorV3.*;
+
 
 import edu.wpi.first.wpilibj.DigitalInput;
+//import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.misc.Constants;
 
 public class ShooterSubsystem extends SubsystemBase {
+  /**
+   *
+   */
   /** Creates a new ShooterSubsystem. */
 
   private final WPI_TalonFX bottom = new WPI_TalonFX(Constants.bottom);
   private final WPI_TalonFX top = new WPI_TalonFX(Constants.top);
   private final WPI_TalonSRX conveyor = new WPI_TalonSRX(Constants.conveyor);
+  private final WPI_TalonSRX indexer = new WPI_TalonSRX(Constants.indexer);
 
   //private final DigitalInput sensor = new DigitalInput(Constants.sensor);
+  //private final DigitalInput intakeSensor = new DigitalInput(0); 
 
+ private DigitalInput[] irBeams = new DigitalInput[] {
+    new DigitalInput(3),
+    new DigitalInput(5)
+  };
 
-  private static final double kP_vel1 = 0.01, kP_vel2 = 0.01;
-  private static final double kI_vel1 = 0.000001, kI_vel2 = 0.000001;
-  private static final double kF= 0.047;
-  private static final double kD_vel1 = 0, kD_vel2 = 0;
+  //private final I2C.Port i2cPort = I2C.Port.kOnboard;
+  //private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
+  //private final ColorMatch m_colorMatcher = new ColorMatch();
+  private static final double kP_vel1 = 0.010005, kP_vel2 = 0.010005;
+  private static final double kI_vel1 = 0.0000009536743, kI_vel2 = 0.0000009536743;
+  private static final double kF= 0.0451;
+  private static final double kD_vel1 = 0.000006, kD_vel2 = 0.000006;
   private static final double closed_loop_ramp = 0.2;
-  public static final int internal_zone = 100; //likely not needed
+
+  public int targetTopVelocity = 9990; 
+  public int targetBottomVelocity = 11027; 
+
+ // public static String colorString;
+
+  //private final Color kBlueTarget = new Color(0.193, 0.436, 0.370);
+  //private final Color kRedTarget = new Color(0.369, 0.480, 0.20);
+  //private final Color kNothing = new Color(0.193, 0.436, 0.270);
 
   public ShooterSubsystem() {
+
+    conveyor.setNeutralMode(NeutralMode.Brake);
+    indexer.setNeutralMode(NeutralMode.Brake);
 
     bottom.configFactoryDefault();
     top.configFactoryDefault();
 
-    bottom.setNeutralMode(NeutralMode.Coast);
-    top.setNeutralMode(NeutralMode.Coast);
-
-    bottom.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor,0, 10); //Read more into timeout Param
+    bottom.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10); //Read more into timeout Param
     top.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
 
     bottom.setInverted(false);
@@ -57,44 +84,87 @@ public class ShooterSubsystem extends SubsystemBase {
     bottom.config_kI(0, kI_vel1);
     top.config_kI(0, kI_vel2);
 
-    bottom.configClosedloopRamp(closed_loop_ramp);
-    top.configClosedloopRamp(closed_loop_ramp);
+    bottom.config_kD(0, kD_vel1);
+    top.config_kD(0, kD_vel2);
+  // m_colorMatcher.addColorMatch(kBlueTarget);
+    //m_colorMatcher.addColorMatch(kNothing);
+    //m_colorMatcher.addColorMatch(kRedTarget);
   }
 
   public void motorOn(){
-    bottom.set(ControlMode.Velocity, 11000);
-    top.set(ControlMode.Velocity, 10500);
+    bottom.set(ControlMode.Velocity, 11027);
+    top.set(ControlMode.Velocity, 9990);
   }
 
-  /** @param b : Bottom motor velocity 
-   *  @param t : Top motor velocity 
-   *  @param c : Conveyor speed (< 1.0) */
-  public void motorOn(double b, double t, double c){
+  /** @param b : Bottom motor velocity (Default: 11027)
+   *  @param t : Top motor velocity (Default: 9990) */
+  
+  public void motorOn(double b, double t){
     bottom.set(ControlMode.Velocity, b);
-    top.set(ControlMode.Velocity, t);
-    conveyor.set(c);    
+    top.set(ControlMode.Velocity, t);  
   }
 
+  public double[] getCurrentVelocities(){
+    return new double[] {
+      bottom.getSelectedSensorVelocity(0),
+      top.getSelectedSensorVelocity(0)
+    };
+  }
+
+  public void decrementTargetVelocity(){
+    targetTopVelocity -= 200;
+    targetBottomVelocity -= 200;
+  }
+
+  // public void incrementTargetVelocity(){
+  //   targetTopVelocity += 200;
+  //   targetBottomVelocity += 200;
+  // }
+
+  // public void resetShoot(){
+  //   targetTopVelocity = 11000;
+  //   targetBottomVelocity = 11500;
+  // }
 
   //Conveyor stuff:
-
   public void setConveyor(final double speed){
     conveyor.set(speed);
   }
 
-  public void outtake(double speed){
-    if(speed > 0.0) speed *= -1;
-    conveyor.set(speed);
-    bottom.set(speed);
-    top.set(speed);
+  public void setIndexer(final double speed){
+    indexer.set(speed);
   }
 
-  // public boolean getSensor(){
-  //   return sensor.get();
+  public void outtake(double speed){
+    speed = -Math.abs(speed);
+    indexer.set(speed);
+    conveyor.set(speed);
+  }
+
+  /** @return conveyor sensor [0] value and indexer sensor [1] value */
+ public boolean[] getSensorValues(){
+   return new boolean[] {
+      irBeams[0].get(),
+      irBeams[1].get()
+    };
+  }
+
+  // public boolean getIntakeSensor(){
+  //   return intakeSensor.get();
+  // }
+
+  // public String getColorFromSensor(){
+  //   return colorString;
   // }
 
   @Override
   public void periodic() {
-   //SmartDashboard.putBoolean("sensor", getSensor());
+
+    SmartDashboard.putBoolean("Indexer", irBeams[0].get());
+    SmartDashboard.putBoolean("Conveyor", irBeams[1].get());
+
+    SmartDashboard.putNumber("Bottom shooter actual speed:", getCurrentVelocities()[0]);
+    SmartDashboard.putNumber("Top shooter actual speed:", getCurrentVelocities()[1]);
+
   }
 }
