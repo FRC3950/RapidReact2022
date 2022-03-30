@@ -10,15 +10,15 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 public class AutoEncoderDrive extends CommandBase {
   /** Creates a new AutoEncoderDrive. */
   DrivetrainSubsystem drivetrain;
-  double count, speed;
+  double nativeDistance, speed;
   double currentCount = 0;
   boolean finished = false;
 
-  /** @param count - Desired encoder count
+  /** @param nativeDistance - Desired encoder count
    *  @param speed - Desired speed (<1.0) */
-  public AutoEncoderDrive(double count, double speed, DrivetrainSubsystem drivetrain) {
+  public AutoEncoderDrive(final int nativeDistance, double speed, DrivetrainSubsystem drivetrain) {
     this.drivetrain = drivetrain;
-    this.count = count;
+    this.nativeDistance = nativeDistance;
     this.speed = speed;
     addRequirements(drivetrain);
   }
@@ -32,11 +32,11 @@ public class AutoEncoderDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    currentCount = drivetrain.getEncoderCount();
+    currentCount = drivetrain.getAverageEncoderCount();
     
     drivetrain.linearDrive(speed);
 
-    finished = (currentCount >= count);
+    finished = (currentCount >= nativeDistance);
 
   }
 
