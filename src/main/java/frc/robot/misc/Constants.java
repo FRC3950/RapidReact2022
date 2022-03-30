@@ -51,8 +51,8 @@ public final class Constants {
 //Solenoid States:
 
     public static class States{
-        public static Value UP = Value.kReverse;
-        public static Value DOWN = Value.kForward;
+        public static Value DOWN = Value.kReverse;
+        public static Value UP = Value.kForward;
 
         public static Value HIGH = Value.kForward;
         public static Value LOW = Value.kReverse;

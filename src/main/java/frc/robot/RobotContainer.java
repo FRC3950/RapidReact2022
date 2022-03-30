@@ -65,50 +65,48 @@ public class RobotContainer {
  
 
 // Create config for trajectory
-TrajectoryConfig config =
- new TrajectoryConfig(
-         AutoConstants.kMaxSpeedMetersPerSecond,
-         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-     // Add kinematics to ensure max speed is actually obeyed
-     .setKinematics(DriveConstants.kDriveKinematics)
-     // Apply the voltage constraint
-     .addConstraint(new DifferentialDriveVoltageConstraint(
-      new SimpleMotorFeedforward(
+  TrajectoryConfig config =
+    new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+      .setKinematics(DriveConstants.kDriveKinematics) // Add kinematics to ensure max speed is actually obeyed
+      .addConstraint(new DifferentialDriveVoltageConstraint( // Apply the voltage constraint
+        new SimpleMotorFeedforward(
           DriveConstants.ksVolts,
           DriveConstants.kvVoltSecondsPerMeter,
           DriveConstants.kaVoltSecondsSquaredPerMeter),
-      DriveConstants.kDriveKinematics,
-      10));
+          DriveConstants.kDriveKinematics,
+          10
+        )
+      );
 
      // An example trajectory to follow.  All units in meters.
-Trajectory exampleTrajectory =
-TrajectoryGenerator.generateTrajectory(
- // Start at the origin facing the +X direction
- new Pose2d(0, 0, new Rotation2d(0)),
- // Pass through these two interior waypoints, making an 's' curve path
- List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
- // End 3 meters straight ahead of where we started, facing forward
- new Pose2d(3, 0, new Rotation2d(0)),
- // Pass config
- config);
+  Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+    // Start at the origin facing the +X direction
+    new Pose2d(0, 0, new Rotation2d(0)),
+    // Pass through these two interior waypoints, making an 's' curve path
+    List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+    // End 3 meters straight ahead of where we started, facing forward
+    new Pose2d(3, 0, new Rotation2d(0)),
+    // Pass config
+    config);
 
 //Auto Trajectory
-  RamseteCommand ramseteCommand =
-    new RamseteCommand(
-        exampleTrajectory,
-        drivetrain::getPose,
-        new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-        new SimpleMotorFeedforward(
-            DriveConstants.ksVolts,
-            DriveConstants.kvVoltSecondsPerMeter,
-            DriveConstants.kaVoltSecondsSquaredPerMeter),
-        DriveConstants.kDriveKinematics,
-        drivetrain::getWheelSpeeds,
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        // RamseteCommand passes volts to the callback
-        drivetrain::tankDriveVolts,
-        drivetrain);
+  RamseteCommand ramseteCommand = new RamseteCommand(
+    exampleTrajectory,
+    drivetrain::getPose,
+    new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+    new SimpleMotorFeedforward(
+      DriveConstants.ksVolts,
+      DriveConstants.kvVoltSecondsPerMeter,
+      DriveConstants.kaVoltSecondsSquaredPerMeter
+    ),
+    DriveConstants.kDriveKinematics,
+    drivetrain::getWheelSpeeds,
+    new PIDController(DriveConstants.kPDriveVel, 0, 0),
+    new PIDController(DriveConstants.kPDriveVel, 0, 0),
+    // RamseteCommand passes volts to the callback
+    drivetrain::tankDriveVolts,
+    drivetrain
+  );
 
 
 
@@ -118,7 +116,7 @@ TrajectoryGenerator.generateTrajectory(
 
   //Controllers:
   private final XboxController xboxController = new XboxController(0);
-  private final Joystick drivestick  = new Joystick(1);
+  private final XboxController driveController  = new XboxController(1);
 
   //Choosers: 
   private SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -142,7 +140,7 @@ TrajectoryGenerator.generateTrajectory(
 
     //Default Commands:
     drivetrain.setDefaultCommand(
-      new DefaultDriveCommand(drivestick::getTwist, drivestick::getY, drivetrain)
+      new DefaultDriveCommand(driveController::getRightX, driveController::getLeftY, drivetrain)
     );
 
     climberSubsystem.setDefaultCommand(
@@ -178,16 +176,13 @@ TrajectoryGenerator.generateTrajectory(
 
    
     //Joystick buttons:
-    new JoystickButton(drivestick, 6)
-      .whenPressed(climberSubsystem::toggleSolenoid);
-
-    new JoystickButton(drivestick, 5)
+    new JoystickButton(driveController, XboxController.Button.kRightBumper.value)
       .whenPressed(drivetrain::toggleDriveGear);
 
-    new JoystickButton(drivestick, 7)
+    new JoystickButton(driveController, XboxController.Button.kStart.value)
       .whenPressed(drivetrain::toggleInvertDrive);
 
-    new JoystickButton(drivestick, 11)
+    new JoystickButton(driveController, XboxController.Button.kLeftBumper.value)
       .whenPressed(drivetrain::toggleHalvedSpeed);
 
    // new JoystickButton(drivestick, 2)

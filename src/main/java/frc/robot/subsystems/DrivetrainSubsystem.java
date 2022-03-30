@@ -54,8 +54,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final Timer time = new Timer();
 
   //SlewRate for Driving
-  private final SlewRateLimiter filterTwist = new SlewRateLimiter(0.5);
-  private final SlewRateLimiter filterX = new SlewRateLimiter(0.8);
+  private final SlewRateLimiter filterTwist = new SlewRateLimiter(2.2);
+  private final SlewRateLimiter filterX = new SlewRateLimiter(4);
 
   private double s, count; //Time (s) and encoder count
   private double angle;
@@ -64,10 +64,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private boolean speedIsHalved = false;
   private boolean driveIsInverted = false;
 
-  private boolean allowTurnInPlace = false;
+  private boolean allowTurnInPlace = true;
 
   /** Creates a new DrivetrainSubsystem. */
   public DrivetrainSubsystem() {
+
+
 
     // Curve Drive Turnable Test
     SmartDashboard.putBoolean("allowTurnInPlace", allowTurnInPlace);
@@ -76,7 +78,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     leftM.setNeutralMode(NeutralMode.Coast); 
     rightM.setNeutralMode(NeutralMode.Coast); 
 
- 
     //Slave follows Master
     leftS.follow(leftM); 
     rightS.follow(rightM); 
@@ -97,7 +98,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
  
     ///////////////////////////////////////////////////////////////////////////////////////
     //Sets the gear to - low/high?????
-    solenoid.set(Value.kForward); 
+    solenoid.set(Value.kReverse); 
 
   }
 
@@ -106,20 +107,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
     
     s = getTime(); 
 
-
     //toggle true/false to get rid of smartDashboard INFO
     if(true){
-
       SmartDashboard.putNumber("Encoder Left: ", getLeftEncoderCount());
       SmartDashboard.putNumber("Encoder Right", getRightEncoderCount());
       SmartDashboard.putNumber("Average Encoder: ", getAverageEncoderCount());
       SmartDashboard.putNumber("Distance Traveled(M)", nativeUnitsToDistanceMeters(getAverageEncoderCount()));
-
       SmartDashboard.putNumber("Heading: ", getAngle());
-
       //Research how to put field and rotation pose on Dashboard!
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
+
+    
+    SmartDashboard.putNumber("Left encoder(m)", nativeUnitsToDistanceMeters(leftM.getSelectedSensorPosition()));
+    SmartDashboard.putNumber("right encoder(m)", -1*nativeUnitsToDistanceMeters(rightM.getSelectedSensorPosition()));
+
 
     // Update the odometry in the periodic block 
     m_odometry.update( 
@@ -144,7 +146,6 @@ public Pose2d getPose(){
   return m_odometry.getPoseMeters();
 }
 
-
 /**
    * Returns the current wheel speeds of the robot.
    *
@@ -156,8 +157,6 @@ public Pose2d getPose(){
     nativeUnitsToVelocity(rightM.getSelectedSensorVelocity()));
   }
 
-
- 
 /**
    * Resets the odometry to the specified pose.
    *
@@ -168,7 +167,6 @@ public Pose2d getPose(){
     m_odometry.resetPosition(pose, Rotation2d.fromDegrees(gyro.getAngle()));
   }
 
-  
   /**
    * Controls the left and right sides of the drive directly with voltages.
    *
@@ -201,11 +199,10 @@ public Pose2d getPose(){
 
   public void shiftBack(){
     solenoid.set(Value.kReverse);
-
   }
 
   public void curveDrive(double x, double y){
-    m_drive.curvatureDrive(x, y, allowTurnInPlace);
+    m_drive.curvatureDrive(x, y, false);
   }
 
   public void teleDrive(double x, double y){
@@ -218,15 +215,11 @@ public Pose2d getPose(){
   }
 
   public void linearDrive(double speed){
-
     m_drive.arcadeDrive(0, speed);
-
   }
 
   public void turn(double speed){
-
     m_drive.arcadeDrive(speed, 0);
-
   }
 
   public void toggleInvertDrive(){
@@ -237,9 +230,7 @@ public Pose2d getPose(){
   }
 
   public void toggleHalvedSpeed(){
-
     speedIsHalved = !speedIsHalved;
-
   }
 
 ////////////Encoder//////////////////
@@ -247,18 +238,18 @@ public Pose2d getPose(){
 //////////Conversions///////////////
 
  
-public void setEncoderCount(double count){ 
-  leftM.getSensorCollection().setIntegratedSensorPosition(count, 0); 
-  rightM.getSensorCollection().setIntegratedSensorPosition(count, 0); 
-} 
+  public void setEncoderCount(double count){ 
+    leftM.getSensorCollection().setIntegratedSensorPosition(count, 0); 
+    rightM.getSensorCollection().setIntegratedSensorPosition(count, 0); 
+  } 
 
-public void resetEncoders(){
-  setEncoderCount(0);
-}
+  public void resetEncoders(){
+    setEncoderCount(0);
+  }
 
-public double getAverageEncoderCount(){  
-  return (leftM.getSelectedSensorPosition() + rightM.getSelectedSensorPosition() ) / 2.0; 
-} 
+  public double getAverageEncoderCount(){  
+    return (leftM.getSelectedSensorPosition() - rightM.getSelectedSensorPosition() ) / 2.0; 
+  } 
 
   /**
    * Gets the average distance of the two encoders in METERS.
@@ -269,26 +260,26 @@ public double getAverageEncoderCount(){
     return nativeUnitsToDistanceMeters(getAverageEncoderCount());
   }
 
-public double getLeftEncoderCount(){ 
-  return leftM.getSelectedSensorPosition(); 
-} 
+  public double getLeftEncoderCount(){ 
+    return leftM.getSelectedSensorPosition(); 
+  } 
 
-public double getRightEncoderCount(){ 
-  return rightM.getSelectedSensorPosition(); 
-} 
+  public double getRightEncoderCount(){ 
+    return -rightM.getSelectedSensorPosition(); 
+  } 
 
- 
+  
 
-//Gyro - getters and resseters 
-public double getAngle(){   return gyro.getAngle(); } 
-public void resetAngle(){  gyro.reset(); } 
+  //Gyro - getters and resseters 
+  public double getAngle(){   return gyro.getAngle(); } 
+  public void resetAngle(){  gyro.reset(); } 
 
-/** Zeroes the heading of the robot. */
-public void zeroHeading() {
-  gyro.reset();
-}
+  /** Zeroes the heading of the robot. */
+  public void zeroHeading() {
+    gyro.reset();
+  }
 
-/**
+  /**
    * Returns the heading of the robot.
    *
    * @return the robot's heading in degrees, from -180 to 180
@@ -309,67 +300,67 @@ public void zeroHeading() {
 
 
 //Timer Getters & Restarts
-public double getTime(){ return time.get(); } 
-public void restartTime(){    time.reset();    time.start(); } 
+  public double getTime(){ return time.get(); } 
+  public void restartTime(){    time.reset();    time.start(); } 
 
 
 
 
-private int distanceToNativeUnits(double positionMeters){ 
+  private int distanceToNativeUnits(double positionMeters){ 
 
-  double wheelRotations = positionMeters/(2 * Math.PI * Units.inchesToMeters(2)); 
+    double wheelRotations = positionMeters/(2 * Math.PI * Units.inchesToMeters(2)); 
 
-  double motorRotations = wheelRotations * kGearRatio; 
+    double motorRotations = wheelRotations * kGearRatio; 
 
-  int sensorCounts = (int)(motorRotations * 2048); 
+    int sensorCounts = (int)(motorRotations * 2048); 
 
-  return sensorCounts; 
+    return sensorCounts; 
 
-} 
-
-
-
-
-private int velocityToNativeUnits(double velocityMetersPerSecond){ 
-
-  double wheelRotationsPerSecond = velocityMetersPerSecond/(2 * Math.PI * Units.inchesToMeters(2)); 
-
-  double motorRotationsPerSecond = wheelRotationsPerSecond * kGearRatio; 
-
-  double motorRotationsPer100ms = motorRotationsPerSecond / 10; 
-
-  int sensorCountsPer100ms = (int)(motorRotationsPer100ms * 2048); 
-
-  return sensorCountsPer100ms; 
-
-} 
-
-private double nativeUnitsToVelocity(double ticksPer100ms){ 
-
-  double rotationPer100ms = ticksPer100ms / 2048;
-  double rotationPerSec = rotationPer100ms * 10;
-  double wheelRotPerSec = rotationPerSec / kGearRatio;
-  double wheelVelocity = wheelRotPerSec * (2 * Math.PI * Units.inchesToMeters(2));
-
-  return wheelVelocity; // In Meters per second
-
-
-} 
+  } 
 
 
 
 
-private double nativeUnitsToDistanceMeters(double sensorCounts){ 
+  private int velocityToNativeUnits(double velocityMetersPerSecond){ 
 
-  double motorRotations = (double)sensorCounts / 2048; 
+    double wheelRotationsPerSecond = velocityMetersPerSecond/(2 * Math.PI * Units.inchesToMeters(2)); 
 
-  double wheelRotations = motorRotations / kGearRatio; 
+    double motorRotationsPerSecond = wheelRotationsPerSecond * kGearRatio; 
 
-  double positionMeters = wheelRotations * (2 * Math.PI * Units.inchesToMeters(2)); 
+    double motorRotationsPer100ms = motorRotationsPerSecond / 10; 
 
-  return positionMeters; 
+    int sensorCountsPer100ms = (int)(motorRotationsPer100ms * 2048); 
 
-} 
+    return sensorCountsPer100ms; 
+
+  } 
+
+  private double nativeUnitsToVelocity(double ticksPer100ms){ 
+
+    double rotationPer100ms = ticksPer100ms / 2048;
+    double rotationPerSec = rotationPer100ms * 10;
+    double wheelRotPerSec = rotationPerSec / kGearRatio;
+    double wheelVelocity = wheelRotPerSec * (2 * Math.PI * Units.inchesToMeters(2));
+
+    return wheelVelocity; // In Meters per second
+
+
+  } 
+
+
+
+
+  private double nativeUnitsToDistanceMeters(double sensorCounts){ 
+
+    double motorRotations = (double)sensorCounts / 2048; 
+
+    double wheelRotations = motorRotations / kGearRatio; 
+
+    double positionMeters = wheelRotations * (2 * Math.PI * Units.inchesToMeters(2)); 
+
+    return positionMeters; 
+
+  } 
 
   //Josh was here
 }
