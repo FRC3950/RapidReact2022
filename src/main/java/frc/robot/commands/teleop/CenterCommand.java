@@ -6,15 +6,18 @@ package frc.robot.commands.teleop;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 
 public class CenterCommand extends CommandBase {
   /** Creates a new CenterCommand. */
   private final DrivetrainSubsystem drivetrain;
+  private final LimelightSubsystem limelight;
   private boolean withinRange = false;
   
-  public CenterCommand(DrivetrainSubsystem drivetrain) {
+  public CenterCommand(DrivetrainSubsystem drivetrain, LimelightSubsystem limelight) {
     this.drivetrain = drivetrain;
-    addRequirements(drivetrain);
+    this.limelight = limelight;
+    addRequirements(drivetrain, limelight);
   }
 
   // Called when the command is initially scheduled.
@@ -24,15 +27,7 @@ public class CenterCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(drivetrain.getAngle() > 5.0){
-      drivetrain.turn(0.25);
-    } 
-    else if(drivetrain.getAngle() < -5.0){
-      drivetrain.turn(-0.25);
-    }
-    else {
-      withinRange = true;
-    }
+    
   }
 
   // Called once the command ends or is interrupted.

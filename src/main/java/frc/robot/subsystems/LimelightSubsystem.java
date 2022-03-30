@@ -11,24 +11,38 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LimelightSubsystem extends SubsystemBase {
   /** Creates a new LimelightSubsystem. */
 
-  private static LimelightSubsystem instance;
   private final NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 
-  double tx = table.getEntry("tx").getDouble(0.0);
-  double ty = table.getEntry("ty").getDouble(0.0);
-  double tv = table.getEntry("tv").getDouble(0.0);
+  double tx;
+  double ty;
+  int tv;
 
   public LimelightSubsystem() {}
 
-  public static synchronized LimelightSubsystem getInstance(){
-    if(instance == null){
-      instance = new LimelightSubsystem();
-    }
-    return instance;
-  }
-
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    tx = table.getEntry("tx").getDouble(0.0);
+    ty = table.getEntry("ty").getDouble(0.0);
+    tv = (int) table.getEntry("tv").getDouble(0.0);
+  }
+
+  public double getHorizOffset(){
+    return tx;
+  }
+
+  public double getVertOffset(){
+    return ty;
+  }
+  
+  public double[] getTargetVelocities(){
+    if(hasTarget()){
+      return null; //Need to implement 
+    }
+    else{
+      return null;
+    }
+  }
+  public boolean hasTarget(){
+    return (tv == 1);
   }
 }

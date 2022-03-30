@@ -33,17 +33,11 @@ public class ShooterSubsystem extends SubsystemBase {
   private final WPI_TalonSRX conveyor = new WPI_TalonSRX(Constants.conveyor);
   private final WPI_TalonSRX indexer = new WPI_TalonSRX(Constants.indexer);
 
-  //private final DigitalInput sensor = new DigitalInput(Constants.sensor);
-  //private final DigitalInput intakeSensor = new DigitalInput(0); 
-
- private DigitalInput[] irBeams = new DigitalInput[] {
+  private DigitalInput[] irBeams = new DigitalInput[] {
     new DigitalInput(3),
     new DigitalInput(5)
   };
 
-  //private final I2C.Port i2cPort = I2C.Port.kOnboard;
-  //private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
-  //private final ColorMatch m_colorMatcher = new ColorMatch();
   private static final double kP_vel1 = 0.010005, kP_vel2 = 0.010005;
   private static final double kI_vel1 = 0.0000009536743, kI_vel2 = 0.0000009536743;
   private static final double kF= 0.0451;
@@ -52,12 +46,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public int targetTopVelocity = 9990; 
   public int targetBottomVelocity = 11027; 
-
- // public static String colorString;
-
-  //private final Color kBlueTarget = new Color(0.193, 0.436, 0.370);
-  //private final Color kRedTarget = new Color(0.369, 0.480, 0.20);
-  //private final Color kNothing = new Color(0.193, 0.436, 0.270);
 
   public ShooterSubsystem() {
 
@@ -86,9 +74,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     bottom.config_kD(0, kD_vel1);
     top.config_kD(0, kD_vel2);
-  // m_colorMatcher.addColorMatch(kBlueTarget);
-    //m_colorMatcher.addColorMatch(kNothing);
-    //m_colorMatcher.addColorMatch(kRedTarget);
   }
 
   public void motorOn(){
@@ -111,10 +96,10 @@ public class ShooterSubsystem extends SubsystemBase {
     };
   }
 
-  public void decrementTargetVelocity(){
-    targetTopVelocity -= 200;
-    targetBottomVelocity -= 200;
-  }
+  // public void decrementTargetVelocity(){
+  //   targetTopVelocity -= 200;
+  //   targetBottomVelocity -= 200;
+  // }
 
   // public void incrementTargetVelocity(){
   //   targetTopVelocity += 200;
@@ -148,15 +133,6 @@ public class ShooterSubsystem extends SubsystemBase {
       irBeams[1].get()
     };
   }
-
-  // public boolean getIntakeSensor(){
-  //   return intakeSensor.get();
-  // }
-
-  // public String getColorFromSensor(){
-  //   return colorString;
-  // }
-
   @Override
   public void periodic() {
 

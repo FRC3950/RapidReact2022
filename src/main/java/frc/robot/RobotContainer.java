@@ -24,6 +24,7 @@ public class RobotContainer {
 
   //Subsystems:
   private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+  private final LimelightSubsystem limelight = new LimelightSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
@@ -37,7 +38,7 @@ public class RobotContainer {
   private final ShootCommand farShootCommand = new ShootCommand(13027, 11990, shooterSubsystem, intakeSubsystem);
   private final ShootCommand hailMaryShootCommand = new ShootCommand(15833, 19000, shooterSubsystem, intakeSubsystem);
 
-  private final CenterCommand centerCommand = new CenterCommand(drivetrain);
+  private final CenterCommand centerCommand = new CenterCommand(drivetrain, limelight);
 
   //Auto commands:
   private final AutoEncoderDrive autoEncoderDrive = new AutoEncoderDrive(100000, 0.75, drivetrain);

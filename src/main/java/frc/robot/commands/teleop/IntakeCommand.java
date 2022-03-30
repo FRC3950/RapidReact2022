@@ -37,8 +37,6 @@ public class IntakeCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-
     //No balls
     if(shooter.getSensorValues()[0] && shooter.getSensorValues()[1]){
       intake.intake(0.75);
@@ -49,7 +47,7 @@ public class IntakeCommand extends CommandBase {
       shooter.setConveyor(0.6);
       intake.intake(0.75);
     }
-    //Ball indexor nothing below
+    //Ball indexer nothing below
     else if(!shooter.getSensorValues()[0] && shooter.getSensorValues()[1]){
       intake.intake(0.75);
       shooter.setConveyor(0.55);
@@ -66,7 +64,7 @@ public class IntakeCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.setSolenoid(Constants.States.UP); //inverted
+    intake.setSolenoid(Constants.States.UP);
     intake.intake(0);
     shooter.setConveyor(0);
     shooter.setIndexer(0);

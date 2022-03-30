@@ -21,7 +21,7 @@ public class TwoBallAutoSequence extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new AutoShootCommand(11027, 9990, 2.0, shooter),
-      new IntakeDrive(drivetrain, shooter, intake), //Encoder count: 40000
+      new IntakeDrive(40000, drivetrain, shooter, intake),
       new AutoShootCommand(12557.83, 15327.57, 4.0, shooter)
     );
   }

@@ -32,17 +32,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private static final ADIS16470_IMU gyro = new ADIS16470_IMU();
 
-
-  //private final DoubleSolenoid sol = new DoubleSolenoid(PneumaticsModuleType.REVPH, forwardChannel, reverseChannel)
   private final DoubleSolenoid solenoid = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, 1, 5);
   private final Timer time = new Timer();
-
-  private final SlewRateLimiter filterTwist = new SlewRateLimiter(0.5);
-  private final SlewRateLimiter filterX = new SlewRateLimiter(0.8);
 
   private double xRateLimiter = 0.8;
   private double twistRateLimiter = 0.5;
 
+  private final SlewRateLimiter filterX = new SlewRateLimiter(xRateLimiter);
+  private final SlewRateLimiter filterTwist = new SlewRateLimiter(twistRateLimiter);
+  
   private double s, count; //Time (s) and encoder count
   private double angle;
   private int direction = 1;
@@ -67,7 +65,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     gyro.calibrate();
 
-    solenoid.set(Value.kForward);
+    solenoid.set(Constants.States.LOW);
 
   }
 
@@ -76,11 +74,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
     //SmartDashboard.putBoolean("Shift:", getShift());
     s = getTime();
     count = getEncoderCount();
-    SmartDashboard.putNumber("Encoder Front Left: ", count);
-    SmartDashboard.putNumber("Yaw angle", getAngle());
 
     SmartDashboard.putBoolean("DRIVE INVERTED (GREEN = TRUE)", driveIsInverted);
     SmartDashboard.putBoolean("DRIVE SPEED HALVED (GREEN = TRUE)", speedIsHalved);
+
+    xRateLimiter = SmartDashboard.getNumber("X-axis rate limit", 0.8);
+    twistRateLimiter = SmartDashboard.getNumber("Twist rate limit", 0.5);
+
   }
 
   public void toggleDriveGear(){
@@ -94,12 +94,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public void shiftBack(){
     solenoid.set(Value.kReverse);
-
   }
-  // public boolean getShift(){
-  //   boolean shift = (solenoid.get() == Value.kForward);
-  //   return shift;
-  // }
 
   public void teleDrive(double x, double y){
     if(speedIsHalved){
@@ -109,16 +104,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
       m_drive.arcadeDrive(filterX.calculate(x * direction), filterTwist.calculate(-y * direction));
     } 
   }
+
   public void linearDrive(double speed){
     m_drive.arcadeDrive(0, speed);
   }
+
   public void turn(double speed){
     m_drive.arcadeDrive(speed, 0);
   }
+
   public void toggleInvertDrive(){
     direction *= -1;
     driveIsInverted = !driveIsInverted;
   }
+
   public void toggleHalvedSpeed(){
     speedIsHalved = !speedIsHalved;
   }
@@ -126,6 +125,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void setEncoderCount(double count){
     leftM.getSensorCollection().setIntegratedSensorPosition(count, 0);
   }
+
   public double getEncoderCount(){ 
     return leftM.getSelectedSensorPosition();
   }
@@ -134,6 +134,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public double getAngle(){
     return gyro.getAngle();
   }
+
   public void resetAngle(){
     gyro.reset();
   }

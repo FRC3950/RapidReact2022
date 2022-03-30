@@ -45,7 +45,6 @@ public class ClimberCommand extends CommandBase {
       climber.setSolenoid(Value.kReverse);
       climber.setMotors(y.getAsDouble());
     }
-
     else if(y.getAsDouble() > 0.1 && !rightLimitSwitch && !leftLimitSwitch){
       climber.setMotors(0.0);
       climber.resetEncoderCount();

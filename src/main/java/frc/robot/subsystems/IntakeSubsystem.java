@@ -17,14 +17,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. **/
-
  
   private final DoubleSolenoid solenoid = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, 0,4); 
   private final WPI_TalonSRX intake = new WPI_TalonSRX(Constants.intake);
-  // private final DoubleSolenoid solTest = new DoubleSolenoid(1,PneumaticsModuleType.REVPH, 6, 7)
 
-  // public static int ballCount = 0;
-// false = blocking 
   public IntakeSubsystem() {}
 
   @Override
@@ -46,10 +42,10 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void toggleSolenoid(){
-    if(solenoid.get() == Value.kReverse){
-      solenoid.set(Value.kForward);
+    if(solenoid.get() == Constants.States.UP){
+      solenoid.set(Constants.States.DOWN);
     } else {
-      solenoid.set(Value.kReverse);
+      solenoid.set(Constants.States.UP);
     }
   }
 
@@ -58,8 +54,8 @@ public class IntakeSubsystem extends SubsystemBase {
   }
   
   /** @param up - kForward if true and kReverse if false */
-  public void setSolenoid(boolean up){
-    if(up) solenoid.set(Value.kForward);
-    if(up == false) solenoid.set(Value.kReverse);
+  public void setSolenoid(boolean isUp){
+    if(isUp) solenoid.set(Constants.States.UP);
+    if(isUp == false) solenoid.set(Constants.States.DOWN);
   }
 }

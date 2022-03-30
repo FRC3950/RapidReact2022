@@ -16,7 +16,7 @@ public class AutoEncoderDrive extends CommandBase {
 
   /** @param count - Desired encoder count
    *  @param speed - Desired speed (<1.0) */
-  public AutoEncoderDrive(final int count, double speed, DrivetrainSubsystem drivetrain) {
+  public AutoEncoderDrive(double count, double speed, DrivetrainSubsystem drivetrain) {
     this.drivetrain = drivetrain;
     this.count = count;
     this.speed = speed;

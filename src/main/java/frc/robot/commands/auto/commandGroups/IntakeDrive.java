@@ -16,9 +16,11 @@ import frc.robot.subsystems.ShooterSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeDrive extends ParallelCommandGroup {
   /** Creates a new IntakeDrive. */
-  public IntakeDrive(DrivetrainSubsystem drivetrain, ShooterSubsystem shooter, IntakeSubsystem intake) {
+  double count;
+  public IntakeDrive(double count, DrivetrainSubsystem drivetrain, ShooterSubsystem shooter, IntakeSubsystem intake) {
+    this.count = count;
     addCommands(
-      new AutoEncoderDrive(40000, 0.60, drivetrain),
+      new AutoEncoderDrive(count, 0.60, drivetrain),
       new AutoIntakeCommand(intake, shooter)
     );
   }

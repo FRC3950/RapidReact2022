@@ -43,7 +43,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("CLIMBER LOCK", getLock());
+    SmartDashboard.putBoolean("CLIMBER LOCK", isLocked());
     SmartDashboard.putString("Climber solenoid", winch.get().toString());
     SmartDashboard.putNumber("Climber encoder count", getEncoderCounts()[0]);
     
@@ -58,20 +58,20 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void toggleSolenoid(){
-    if(winch.get() == Value.kReverse){
-      winch.set(Value.kForward);
+    if(winch.get() == Constants.States.UP){
+      winch.set(Constants.States.LOCKED);
     }
-    else if(winch.get() != Value.kReverse){
-      winch.set(Value.kReverse);
+    else if(winch.get() != Constants.States.UP){
+      winch.set(Constants.States.UP);
     }
   }
 
   public void togglePivot(){
-    if(pivot.get() == Value.kReverse){
-      pivot.set(Value.kForward);
+    if(pivot.get() == Constants.States.UNLOCKED){
+      pivot.set(Constants.States.LOCKED);
     } 
-    else if(pivot.get() != Value.kReverse){
-      pivot.set(Value.kReverse);
+    else if(pivot.get() != Constants.States.UNLOCKED){
+      pivot.set(Constants.States.UNLOCKED);
     }
   }
 
@@ -89,8 +89,8 @@ public class ClimberSubsystem extends SubsystemBase {
     };
   }
 
-  public boolean getLock(){
-    return (winch.get() == Value.kForward);
+  public boolean isLocked(){
+    return (winch.get() == Constants.States.LOCKED);
   }
 
   public void resetEncoderCount(){
