@@ -4,6 +4,18 @@
 
 package frc.robot;
 
+import java.util.List;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -11,6 +23,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.teleop.*;
+import frc.robot.misc.Constants.AutoConstants;
+import frc.robot.misc.Constants.DriveConstants;
 import frc.robot.commands.auto.autoCommands.*;
 import frc.robot.commands.auto.commandGroups.*;
 import frc.robot.subsystems.*;
@@ -18,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 
 
 public class RobotContainer {
@@ -42,6 +57,60 @@ public class RobotContainer {
   //Auto commands:
   private final AutoEncoderDrive autoEncoderDrive = new AutoEncoderDrive(100000, 0.75, drivetrain);
   private final AutoShootCommand autoShootCommand = new AutoShootCommand(11027.0, 9990.0, 6, shooterSubsystem);
+  
+
+     
+ // Create a voltage constraint to ensure we don't accelerate too fast
+  //PUt straight inside
+ 
+
+// Create config for trajectory
+TrajectoryConfig config =
+ new TrajectoryConfig(
+         AutoConstants.kMaxSpeedMetersPerSecond,
+         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+     // Add kinematics to ensure max speed is actually obeyed
+     .setKinematics(DriveConstants.kDriveKinematics)
+     // Apply the voltage constraint
+     .addConstraint(new DifferentialDriveVoltageConstraint(
+      new SimpleMotorFeedforward(
+          DriveConstants.ksVolts,
+          DriveConstants.kvVoltSecondsPerMeter,
+          DriveConstants.kaVoltSecondsSquaredPerMeter),
+      DriveConstants.kDriveKinematics,
+      10));
+
+     // An example trajectory to follow.  All units in meters.
+Trajectory exampleTrajectory =
+TrajectoryGenerator.generateTrajectory(
+ // Start at the origin facing the +X direction
+ new Pose2d(0, 0, new Rotation2d(0)),
+ // Pass through these two interior waypoints, making an 's' curve path
+ List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+ // End 3 meters straight ahead of where we started, facing forward
+ new Pose2d(3, 0, new Rotation2d(0)),
+ // Pass config
+ config);
+
+//Auto Trajectory
+  RamseteCommand ramseteCommand =
+    new RamseteCommand(
+        exampleTrajectory,
+        drivetrain::getPose,
+        new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+        new SimpleMotorFeedforward(
+            DriveConstants.ksVolts,
+            DriveConstants.kvVoltSecondsPerMeter,
+            DriveConstants.kaVoltSecondsSquaredPerMeter),
+        DriveConstants.kDriveKinematics,
+        drivetrain::getWheelSpeeds,
+        new PIDController(DriveConstants.kPDriveVel, 0, 0),
+        new PIDController(DriveConstants.kPDriveVel, 0, 0),
+        // RamseteCommand passes volts to the callback
+        drivetrain::tankDriveVolts,
+        drivetrain);
+
+
 
   //Command groups:
   private final TwoBallAutoSequence twoBallAuto = new TwoBallAutoSequence(drivetrain, shooterSubsystem, intakeSubsystem);
@@ -66,6 +135,7 @@ public class RobotContainer {
     autoChooser.addOption("2 ball auto sequence", twoBallAuto);
     autoChooser.addOption("Test auto drive forward", autoEncoderDrive);
     autoChooser.addOption("Test auto shoot", autoShootCommand);
+    autoChooser.addOption("Trajectory", ramseteCommand);
 
     //Smartdashboard:
     SmartDashboard.putData("Auto command selection", autoChooser);
