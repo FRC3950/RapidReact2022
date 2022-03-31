@@ -73,9 +73,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 
 
-    // Curve Drive Turnable Test
-    SmartDashboard.putBoolean("allowTurnInPlace", allowTurnInPlace);
-
     //Motors Coast/Break
     leftM.setNeutralMode(NeutralMode.Coast); 
     rightM.setNeutralMode(NeutralMode.Coast); 
@@ -112,17 +109,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
     //toggle true/false to get rid of smartDashboard INFO
     if(true){
       SmartDashboard.putNumber("Encoder Left: ", getLeftEncoderCount());
-      SmartDashboard.putNumber("Encoder Right", getRightEncoderCount());
+      SmartDashboard.putNumber("Encoder Right", -1 * getRightEncoderCount());
       SmartDashboard.putNumber("Average Encoder: ", getAverageEncoderCount());
-      SmartDashboard.putNumber("Distance Traveled(M)", nativeUnitsToDistanceMeters(getAverageEncoderCount()));
+     //Converted 
+      SmartDashboard.putNumber("Left encoder(m)", nativeUnitsToDistanceMeters(leftM.getSelectedSensorPosition()));
+      SmartDashboard.putNumber("Right encoder(m)", -1*nativeUnitsToDistanceMeters(rightM.getSelectedSensorPosition()));
+      SmartDashboard.putNumber("Average Distance(m)", getAverageEncoderDistance());
+
       SmartDashboard.putNumber("Heading: ", getAngle());
+
+
       //Research how to put field and rotation pose on Dashboard!
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
     
-    SmartDashboard.putNumber("Left encoder(m)", nativeUnitsToDistanceMeters(leftM.getSelectedSensorPosition()));
-    SmartDashboard.putNumber("right encoder(m)", -1*nativeUnitsToDistanceMeters(rightM.getSelectedSensorPosition()));
+
 
 
     // Update the odometry in the periodic block 
@@ -207,9 +209,6 @@ public Pose2d getPose(){
     solenoid.set(Value.kReverse);
   }
 
-  public void curveDrive(double x, double y){
-    m_drive.curvatureDrive(x, y, false);
-  }
 
   public void teleDrive(double x, double y){
     if(speedIsHalved){
