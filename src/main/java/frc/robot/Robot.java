@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {}
 
-  public Trajectory getTrajectory(){
-    return trajectory1;
-  }
+  // public Trajectory getTrajectory(){
+  //   return trajectory1;
+  // }
 }
