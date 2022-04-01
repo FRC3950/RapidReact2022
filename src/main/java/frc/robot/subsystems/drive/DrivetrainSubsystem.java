@@ -28,15 +28,15 @@ import com.ctre.phoenix.motorcontrol.can.*;
 public class DrivetrainSubsystem extends SubsystemBase {
 
   //Gear Ratio
- private final double kGearRatio = 15; //Gear ratio needed - must switch robot to correct gear
+ public static final double kGearRatio = 15; //Gear ratio needed - must switch robot to correct gear
  
   //Left Motors
-  private final WPI_TalonFX leftM = new WPI_TalonFX(Constants.leftM);
-  private final WPI_TalonFX leftS = new WPI_TalonFX(Constants.leftS);
+  protected static final WPI_TalonFX leftM = new WPI_TalonFX(Constants.leftM);
+  protected static final WPI_TalonFX leftS = new WPI_TalonFX(Constants.leftS);
 
   //Right Motors
-  private final WPI_TalonFX rightM = new WPI_TalonFX(Constants.rightM);
-  private final WPI_TalonFX rightS = new WPI_TalonFX(Constants.rightS);
+  protected static final  WPI_TalonFX rightM = new WPI_TalonFX(Constants.rightM);
+  protected static final WPI_TalonFX rightS = new WPI_TalonFX(Constants.rightS);
 
   //Robot's Drive
   private final DifferentialDrive m_drive = new DifferentialDrive(leftM, rightS);
@@ -108,21 +108,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
     if(true){
       SmartDashboard.putNumber("Encoder Left: ", getLeftEncoderCount());
       SmartDashboard.putNumber("Encoder Right", getRightEncoderCount());
-      SmartDashboard.putNumber("Average Encoder: ", getAverageEncoderCount());
-      SmartDashboard.putNumber("Distance Traveled(M)", nativeUnitsToDistanceMeters(getAverageEncoderCount()));
+      SmartDashboard.putNumber("Average Encoder: ", Odometry.getAverageEncoderCount());
+      SmartDashboard.putNumber("Distance Traveled(M)", Odometry.nativeUnitsToDistanceMeters(Odometry.getAverageEncoderCount()));
       SmartDashboard.putNumber("Heading: ", getAngle());
       //Research how to put field and rotation pose on Dashboard!
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
     
-    SmartDashboard.putNumber("Left encoder(m)", nativeUnitsToDistanceMeters(leftM.getSelectedSensorPosition()));
-    SmartDashboard.putNumber("right encoder(m)", -1*nativeUnitsToDistanceMeters(rightM.getSelectedSensorPosition()));
+    SmartDashboard.putNumber("Left encoder(m)", Odometry.nativeUnitsToDistanceMeters(leftM.getSelectedSensorPosition()));
+    SmartDashboard.putNumber("right encoder(m)", -1*Odometry.nativeUnitsToDistanceMeters(rightM.getSelectedSensorPosition()));
 
     // Update the odometry in the periodic block 
     m_odometry.update( 
       Rotation2d.fromDegrees(gyro.getAngle()), 
-      nativeUnitsToDistanceMeters(getLeftEncoderCount()), 
-      nativeUnitsToDistanceMeters(getRightEncoderCount())
+      Odometry.nativeUnitsToDistanceMeters(getLeftEncoderCount()), 
+      Odometry.nativeUnitsToDistanceMeters(getRightEncoderCount())
     );  //encoder count needs to be in meters 
 
     SmartDashboard.putBoolean("DRIVE INVERTED (GREEN = TRUE)", driveIsInverted);
@@ -152,8 +152,8 @@ public Pose2d getPose(){
    */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(
-    nativeUnitsToVelocity(leftM.getSelectedSensorVelocity()), 
-    nativeUnitsToVelocity(rightM.getSelectedSensorVelocity()));
+    Odometry.nativeUnitsToVelocity(leftM.getSelectedSensorVelocity()), 
+    Odometry.nativeUnitsToVelocity(rightM.getSelectedSensorVelocity()));
   }
 
 /**
@@ -232,7 +232,7 @@ public Pose2d getPose(){
 ///////////Gyro/////////////////////
 //////////Conversions///////////////
 
- 
+
   public void setEncoderCount(double count){ 
     leftM.getSensorCollection().setIntegratedSensorPosition(count, 0); 
     rightM.getSensorCollection().setIntegratedSensorPosition(count, 0); 
@@ -242,24 +242,11 @@ public Pose2d getPose(){
     setEncoderCount(0);
   }
 
-  public double getAverageEncoderCount(){  
-    return (leftM.getSelectedSensorPosition() - rightM.getSelectedSensorPosition() ) / 2.0; 
-  } 
-
-  /**
-   * Gets the average distance of the two encoders in METERS.
-   *
-   * @return the average of the two encoder readings in METERS
-   */
-  public double getAverageEncoderDistance() {
-    return nativeUnitsToDistanceMeters(getAverageEncoderCount());
-  }
-
-  public double getLeftEncoderCount(){ 
+  public static double getLeftEncoderCount(){ 
     return leftM.getSelectedSensorPosition(); 
   } 
 
-  public double getRightEncoderCount(){ 
+  public static double getRightEncoderCount(){ 
     return -rightM.getSelectedSensorPosition(); 
   } 
 
@@ -295,50 +282,5 @@ public Pose2d getPose(){
   public double getTime(){ return time.get(); } 
   public void restartTime(){    time.reset();    time.start(); } 
 
-
-  private int distanceToNativeUnits(double positionMeters){ 
-
-    double wheelRotations = positionMeters/(2 * Math.PI * Units.inchesToMeters(2)); 
-
-    double motorRotations = wheelRotations * kGearRatio; 
-
-    int sensorCounts = (int)(motorRotations * 2048); 
-
-    return sensorCounts; 
-
-  } 
-
-  private int velocityToNativeUnits(double velocityMetersPerSecond){ 
-
-    double wheelRotationsPerSecond = velocityMetersPerSecond/(2 * Math.PI * Units.inchesToMeters(2)); 
-
-    double motorRotationsPerSecond = wheelRotationsPerSecond * kGearRatio;  
-    double motorRotationsPer100ms = motorRotationsPerSecond / 10; 
-
-    int sensorCountsPer100ms = (int)(motorRotationsPer100ms * 2048); 
-
-    return sensorCountsPer100ms;
-  } 
-
-  private double nativeUnitsToVelocity(double ticksPer100ms){ 
-
-    double rotationPer100ms = ticksPer100ms / 2048;
-    double rotationPerSec = rotationPer100ms * 10;
-    double wheelRotPerSec = rotationPerSec / kGearRatio;
-    double wheelVelocity = wheelRotPerSec * (2 * Math.PI * Units.inchesToMeters(2));
-
-    return wheelVelocity; // In Meters per second
-  } 
-
-  private double nativeUnitsToDistanceMeters(double sensorCounts){ 
-
-    double motorRotations = (double) sensorCounts / 2048; 
-
-    double wheelRotations = motorRotations / kGearRatio; 
-
-    double positionMeters = wheelRotations * (2 * Math.PI * Units.inchesToMeters(2)); 
-
-    return positionMeters;
-  } 
   //Josh was here
 }

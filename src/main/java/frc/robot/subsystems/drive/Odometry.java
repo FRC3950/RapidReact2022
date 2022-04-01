@@ -1,41 +1,66 @@
 package frc.robot.subsystems.drive;
+import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.drive.DrivetrainSubsystem;
 
-import java.util.List;
+public abstract class Odometry extends DrivetrainSubsystem{
+    //TODO: put all of the odometry stuff from DrivetrainSubsystem in here
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
-import frc.robot.misc.Constants;
-import frc.robot.misc.Constants.AutoConstants;
-import frc.robot.misc.Constants.DriveConstants;
+    public static int distanceToNativeUnits(double positionMeters){ 
 
-public abstract class Odometry {
+        double wheelRotations = positionMeters/(2 * Math.PI * Units.inchesToMeters(2)); 
+    
+        double motorRotations = wheelRotations * DrivetrainSubsystem.kGearRatio; 
+    
+        int sensorCounts = (int)(motorRotations * 2048); 
+    
+        return sensorCounts; 
+    
+    } 
+    
+      public static synchronized int velocityToNativeUnits(double velocityMetersPerSecond){ 
+    
+        double wheelRotationsPerSecond = velocityMetersPerSecond/(2 * Math.PI * Units.inchesToMeters(2)); 
+    
+        double motorRotationsPerSecond = wheelRotationsPerSecond * DrivetrainSubsystem.kGearRatio;  
+        double motorRotationsPer100ms = motorRotationsPerSecond / 10; 
+    
+        int sensorCountsPer100ms = (int)(motorRotationsPer100ms * 2048); 
+    
+        return sensorCountsPer100ms;
+      } 
+    
+      public static synchronized double nativeUnitsToVelocity(double ticksPer100ms){ 
+    
+        double rotationPer100ms = ticksPer100ms / 2048;
+        double rotationPerSec = rotationPer100ms * 10;
+        double wheelRotPerSec = rotationPerSec / DrivetrainSubsystem.kGearRatio;
+        double wheelVelocity = wheelRotPerSec * (2 * Math.PI * Units.inchesToMeters(2));
+    
+        return wheelVelocity; // In Meters per second
+      } 
+    
+      public static synchronized double nativeUnitsToDistanceMeters(double sensorCounts){ 
+    
+        double motorRotations = (double) sensorCounts / 2048; 
+    
+        double wheelRotations = motorRotations / DrivetrainSubsystem.kGearRatio; 
+    
+        double positionMeters = wheelRotations * (2 * Math.PI * Units.inchesToMeters(2)); 
+    
+        return positionMeters;
+      } 
 
-    public static TrajectoryConfig config = 
-    new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-      .setKinematics(Constants.DriveConstants.kDriveKinematics) // Add kinematics to ensure max speed is actually obeyed
-      .addConstraint(
-        new DifferentialDriveVoltageConstraint( // Apply the voltage constraint
-            new SimpleMotorFeedforward(
-                Constants.DriveConstants.ksVolts,
-                Constants.DriveConstants.kvVoltSecondsPerMeter,
-                Constants.DriveConstants.kaVoltSecondsSquaredPerMeter
-            ),
-            Constants.DriveConstants.kDriveKinematics,
-            10
-        ));
+      public static synchronized double getAverageEncoderCount(){  
+        return (leftM.getSelectedSensorPosition() - rightM.getSelectedSensorPosition() ) / 2.0; 
+      } 
+    
+      /**
+       * Gets the average distance of the two encoders in METERS.
+       *
+       * @return the average of the two encoder readings in METERS
+       */
+      public static synchronized double getAverageEncoderDistance() {
+        return Odometry.nativeUnitsToDistanceMeters(getAverageEncoderCount());
+      }
 
-       // An example trajectory to follow.  All units in meters.
-    public static Trajectory exampleTrajectory = 
-    TrajectoryGenerator.generateTrajectory(
-        new Pose2d(0, 0, new Rotation2d(0)), // Start at the origin facing the +X direction
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)), // Pass through these two interior waypoints, making an 's' curve path
-        new Pose2d(3, 0, new Rotation2d(0)), // End 3 meters straight ahead of where we started, facing forward
-        config //pass config
-    ); 
 }
