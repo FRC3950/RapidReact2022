@@ -51,7 +51,7 @@ public abstract class Odometry extends DrivetrainSubsystem{
       } 
 
       public static synchronized double getAverageEncoderCount(){  
-        return (leftM.getSelectedSensorPosition() - rightM.getSelectedSensorPosition() ) / 2.0; 
+        return (leftM.getSelectedSensorPosition() + rightM.getSelectedSensorPosition() ) / 2.0; 
       } 
     
       /**
