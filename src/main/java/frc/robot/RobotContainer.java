@@ -66,7 +66,34 @@ public class RobotContainer {
  // Create a voltage constraint to ensure we don't accelerate too fast
   //PUt straight inside
 
-  //Auto Trajectory
+// Create config for trajectory
+  TrajectoryConfig config =
+    new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+      .setKinematics(DriveConstants.kDriveKinematics) // Add kinematics to ensure max speed is actually obeyed
+      .addConstraint(new DifferentialDriveVoltageConstraint( // Apply the voltage constraint
+        new SimpleMotorFeedforward(
+          DriveConstants.ksVolts,
+          DriveConstants.kvVoltSecondsPerMeter,
+          DriveConstants.kaVoltSecondsSquaredPerMeter),
+          DriveConstants.kDriveKinematics,
+          10
+        )
+      );
+
+     // An example trajectory to follow.  All units in meters.
+  Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+    // Start at the origin facing the +X direction
+    new Pose2d(0, 0, new Rotation2d(0)),
+    // Pass through these two interior waypoints, making an 's' curve path
+    List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+    // End 3 meters straight ahead of where we started, facing forward
+    new Pose2d(3, 0, new Rotation2d(0)),
+    // Pass config
+    config);
+
+    
+
+//Auto Trajectory
   RamseteCommand ramseteCommand = new RamseteCommand(
     Odometry.exampleTrajectory,
     drivetrain::getPose,
@@ -113,7 +140,7 @@ public class RobotContainer {
 
     //Default Commands:
     drivetrain.setDefaultCommand(
-      new DefaultDriveCommand(driveController::getRightX, driveController::getLeftY, drivetrain)
+      new DefaultDriveCommand(driveController::getLeftY, driveController::getRightX, drivetrain)
     );
 
     climberSubsystem.setDefaultCommand(

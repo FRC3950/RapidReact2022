@@ -1,6 +1,9 @@
 {
   "SysId": {
     "Analysis Type": "General Mechanism",
+    "NetworkTables Settings": {
+      "serverTeam": "3950"
+    },
     "mode": "Client",
     "serverTeam": "3950"
   }

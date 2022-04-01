@@ -7,6 +7,7 @@ package frc.robot.commands.auto.autoCommands;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.teleop.IntakeCommand;
+import frc.robot.misc.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -27,7 +28,7 @@ public class AutoIntakeCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.setSolenoid(Value.kReverse);
+    intake.setSolenoid(Constants.States.DOWN);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -49,7 +50,7 @@ public class AutoIntakeCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.setSolenoid(Value.kForward);
+    intake.setSolenoid(Constants.States.UP);
   }
 
   // Returns true when the command should end.
