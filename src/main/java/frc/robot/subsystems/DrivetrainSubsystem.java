@@ -125,10 +125,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Average Encoder: ", getAverageEncoderCount());
      //Converted 
       SmartDashboard.putNumber("Left encoder(m)", nativeUnitsToDistanceMeters(leftM.getSelectedSensorPosition()));
-      SmartDashboard.putNumber("Right encoder(m)", -1*nativeUnitsToDistanceMeters(rightM.getSelectedSensorPosition()));
+      SmartDashboard.putNumber("Right encoder(m)", nativeUnitsToDistanceMeters(rightM.getSelectedSensorPosition()));
       SmartDashboard.putNumber("Average Distance(m)", getAverageEncoderDistance());
 
       SmartDashboard.putNumber("Heading: ", getAngle());
+
+      SmartDashboard.putNumber("Left Velocity ", nativeUnitsToVelocity(leftM.getSelectedSensorVelocity()));
+      SmartDashboard.putNumber("Right Velocity ", nativeUnitsToVelocity(rightM.getSelectedSensorVelocity()));
 
 
       //Research how to put field and rotation pose on Dashboard!
@@ -265,7 +268,7 @@ public Pose2d getPose(){
   }
 
   public double getAverageEncoderCount(){  
-    return (leftM.getSelectedSensorPosition() - rightM.getSelectedSensorPosition() ) / 2.0; 
+    return (leftM.getSelectedSensorPosition() + rightM.getSelectedSensorPosition() ) / 2.0; 
   } 
 
   /**
