@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.commands.auto.autoCommands.*;
 import frc.robot.commands.auto.commandGroups.*;
 

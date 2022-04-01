@@ -20,20 +20,19 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.misc.Constants.AutoConstants;
 import frc.robot.misc.Constants.DriveConstants;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.drive.AutoTrajectories;
+import frc.robot.subsystems.drive.DrivetrainSubsystem;
 
-public class trajectoryDrive extends CommandBase {
+
+//TODO: Organize all of this stuff 
+
+public class TrajectoryDrive extends CommandBase {
   DrivetrainSubsystem drivetrain;
   Trajectory exampleTrajectory;
   RamseteCommand ramseteCommand;
 
-
-//give fields
-//give drivesub
-//require drivesub
-
-  /** Creates a new trajectoryDrive. */
-  public trajectoryDrive(DrivetrainSubsystem drivetrain) {
+  /** Creates a new TrajectoryDrive. */
+  public TrajectoryDrive (DrivetrainSubsystem drivetrain) {
     this.drivetrain = drivetrain;
     addRequirements(drivetrain);
     // Create a voltage constraint to ensure we don't accelerate too fast
@@ -47,48 +46,37 @@ public class trajectoryDrive extends CommandBase {
             10);
 
 // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics)
-            // Apply the voltage constraint
-            .addConstraint(autoVoltageConstraint);
-
+    TrajectoryConfig config = AutoTrajectories.config;
             // An example trajectory to follow.  All units in meters.
-    Trajectory exampleTrajectory =
-    TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        // Pass config
-        config);
+    Trajectory exampleTrajectory = AutoTrajectories.exampleTrajectory;
+    // TrajectoryGenerator.generateTrajectory(
+    //     // Start at the origin facing the +X direction
+    //     new Pose2d(0, 0, new Rotation2d(0)),
+    //     // Pass through these two interior waypoints, making an 's' curve path
+    //     List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+    //     // End 3 meters straight ahead of where we started, facing forward
+    //     new Pose2d(3, 0, new Rotation2d(0)),
+    //     // Pass config
+    //     config);
 
-RamseteCommand ramseteCommand =
-    new RamseteCommand(
-        exampleTrajectory,
-        drivetrain::getPose,
-        new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-        new SimpleMotorFeedforward(
-            DriveConstants.ksVolts,
-            DriveConstants.kvVoltSecondsPerMeter,
-            DriveConstants.kaVoltSecondsSquaredPerMeter),
-        DriveConstants.kDriveKinematics,
-        drivetrain::getWheelSpeeds,
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        // RamseteCommand passes volts to the callback
-        drivetrain::tankDriveVolts,
-        drivetrain);
-
-
-
-            
+    RamseteCommand ramseteCommand =
+      new RamseteCommand(
+          exampleTrajectory,
+          drivetrain::getPose,
+          new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+          new SimpleMotorFeedforward(
+              DriveConstants.ksVolts,
+              DriveConstants.kvVoltSecondsPerMeter,
+              DriveConstants.kaVoltSecondsSquaredPerMeter),
+          DriveConstants.kDriveKinematics,
+          drivetrain::getWheelSpeeds,
+          new PIDController(DriveConstants.kPDriveVel, 0, 0),
+          new PIDController(DriveConstants.kPDriveVel, 0, 0),
+          // RamseteCommand passes volts to the callback
+          drivetrain::tankDriveVolts,
+          drivetrain);   
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
@@ -97,11 +85,10 @@ RamseteCommand ramseteCommand =
 
     
 // Reset odometry to the starting pose of the trajectory.
-drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
+    drivetrain.resetOdometry(AutoTrajectories.exampleTrajectory.getInitialPose());
 
 // Run path following command, then stop at the end.
- ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
-
+    ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
   }
 
   // Called every time the scheduler runs while the command is scheduled.

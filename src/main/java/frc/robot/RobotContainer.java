@@ -28,6 +28,8 @@ import frc.robot.misc.Constants.DriveConstants;
 import frc.robot.commands.auto.autoCommands.*;
 import frc.robot.commands.auto.commandGroups.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.drive.DrivetrainSubsystem;
+import frc.robot.subsystems.drive.AutoTrajectories;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -58,43 +60,12 @@ public class RobotContainer {
   //Auto commands:
   private final AutoEncoderDrive autoEncoderDrive = new AutoEncoderDrive(100000, 0.75, drivetrain);
   private final AutoShootCommand autoShootCommand = new AutoShootCommand(11027.0, 9990.0, 6, shooterSubsystem);
-  
 
-     
- // Create a voltage constraint to ensure we don't accelerate too fast
-  //PUt straight inside
- 
-
-// Create config for trajectory
-  TrajectoryConfig config =
-    new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-      .setKinematics(DriveConstants.kDriveKinematics) // Add kinematics to ensure max speed is actually obeyed
-      .addConstraint(new DifferentialDriveVoltageConstraint( // Apply the voltage constraint
-        new SimpleMotorFeedforward(
-          DriveConstants.ksVolts,
-          DriveConstants.kvVoltSecondsPerMeter,
-          DriveConstants.kaVoltSecondsSquaredPerMeter),
-          DriveConstants.kDriveKinematics,
-          10
-        )
-      );
-
-     // An example trajectory to follow.  All units in meters.
-  Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-    // Start at the origin facing the +X direction
-    new Pose2d(0, 0, new Rotation2d(0)),
-    // Pass through these two interior waypoints, making an 's' curve path
-    List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-    // End 3 meters straight ahead of where we started, facing forward
-    new Pose2d(3, 0, new Rotation2d(0)),
-    // Pass config
-    config);
-
-    
+ /** Voltage constraint found in {@link Trajectory} */
 
 //Auto Trajectory
-  RamseteCommand ramseteCommand = new RamseteCommand(
-    exampleTrajectory,
+  private RamseteCommand ramseteCommand = new RamseteCommand(
+    AutoTrajectories.exampleTrajectory,
     drivetrain::getPose,
     new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
     new SimpleMotorFeedforward(
@@ -112,10 +83,9 @@ public class RobotContainer {
   );
 
 
-
   //Command groups:
   private final TwoBallAutoSequence twoBallAuto = new TwoBallAutoSequence(drivetrain, shooterSubsystem, intakeSubsystem);
-
+  private final OneBallAutoSequence oneBallAuto = new OneBallAutoSequence(drivetrain, shooterSubsystem);
 
   //Controllers:
   private final XboxController xboxController = new XboxController(0);
@@ -125,17 +95,13 @@ public class RobotContainer {
   private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
  
-
-
-
   public RobotContainer() {
     
     configureButtonBindings();
     
     //Autochooser options:
     autoChooser.addOption("2 ball auto sequence", twoBallAuto);
-    autoChooser.addOption("Test auto drive forward", autoEncoderDrive);
-    autoChooser.addOption("Test auto shoot", autoShootCommand);
+    autoChooser.addOption("1 ball auto sequence", oneBallAuto);
     autoChooser.addOption("Trajectory", ramseteCommand);
 
     //Smartdashboard:

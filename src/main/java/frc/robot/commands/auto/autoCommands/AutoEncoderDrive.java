@@ -5,7 +5,8 @@
 package frc.robot.commands.auto.autoCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.drive.DrivetrainSubsystem;
+import frc.robot.subsystems.drive.Odometry;
 
 public class AutoEncoderDrive extends CommandBase {
   /** Creates a new AutoEncoderDrive. */
@@ -32,7 +33,7 @@ public class AutoEncoderDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    currentCount = drivetrain.getAverageEncoderCount();
+    currentCount = Odometry.getAverageEncoderCount();
     
     drivetrain.linearDrive(speed);
 

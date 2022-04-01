@@ -7,15 +7,15 @@ package frc.robot.commands.auto.commandGroups;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.auto.autoCommands.AutoEncoderDrive;
 import frc.robot.commands.auto.autoCommands.AutoShootCommand;
-import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.drive.DrivetrainSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class OneBallAutoSequence extends SequentialCommandGroup {
   /** Creates a new OneBallAutoSequence. */
-  public OneBallAutoSequence( DrivetrainSubsystem drivetrain, ShooterSubsystem shooter) {
+  public OneBallAutoSequence(DrivetrainSubsystem drivetrain, ShooterSubsystem shooter) {
     addCommands(
       new AutoShootCommand(11027, 9990, 4.0, shooter),
       new AutoEncoderDrive(45000, 0.6, drivetrain)

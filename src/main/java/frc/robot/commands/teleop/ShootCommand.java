@@ -7,9 +7,9 @@ package frc.robot.commands.teleop;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.drive.DrivetrainSubsystem;
 
 public class ShootCommand extends CommandBase {
   /** Creates a new ShootCommand. */
