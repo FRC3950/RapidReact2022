@@ -5,7 +5,7 @@
 package frc.robot.commands.auto.autoCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.drive.DrivetrainSubsystem;
 
 public class AutoEncoderDrive extends CommandBase {
   /** Creates a new AutoEncoderDrive. */
