@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
+// import edu.wpi.first.wpilibj.ADIS16448_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,6 +20,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
+import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -39,7 +41,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final WPI_TalonFX rightS = new WPI_TalonFX(Constants.rightS);
 
   //Robot's Drive
-  private final DifferentialDrive m_drive = new DifferentialDrive(leftM, rightS);
+  private final DifferentialDrive m_drive;
 
   //Gyro
   private static final ADIS16470_IMU gyro = new ADIS16470_IMU();
@@ -77,9 +79,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
     leftM.setNeutralMode(NeutralMode.Coast); 
     rightM.setNeutralMode(NeutralMode.Coast); 
 
+   
+    //Invert
+    rightM.setInverted(true);
+    rightS.setInverted(true);
     //Slave follows Master
     leftS.follow(leftM); 
     rightS.follow(rightM); 
+
+    
+
+     m_drive = new DifferentialDrive(leftM, rightM);
+
 
     //Motors default sensor - Integrated
     leftM.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor); 
@@ -89,7 +100,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     setEncoderCount(0); 
 
     //Calibrate gyro for auto
-    gyro.calibrate(); 
+    gyro.setYawAxis(IMUAxis.kY);
+    gyro.calibrate();
 
     //Calibrates Position of robot for Auto
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(gyro.getAngle())); //That was a nightmare to figure out :/ 
@@ -212,10 +224,10 @@ public Pose2d getPose(){
 
   public void teleDrive(double x, double y){
     if(speedIsHalved){
-      m_drive.arcadeDrive(x * direction * .5, -y * direction * .5);
+      m_drive.arcadeDrive(-1*x * direction * .5, y * direction * .5);
     }
     else {
-      m_drive.arcadeDrive(filterX.calculate(x * direction), filterTwist.calculate(-y * direction));
+      m_drive.arcadeDrive(-1*filterX.calculate(x * direction), filterTwist.calculate(y * direction));
     } 
   }
 

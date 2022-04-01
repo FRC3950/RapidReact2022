@@ -143,7 +143,7 @@ public class RobotContainer {
 
     //Default Commands:
     drivetrain.setDefaultCommand(
-      new DefaultDriveCommand(driveController::getRightX, driveController::getLeftY, drivetrain)
+      new DefaultDriveCommand(driveController::getLeftY, driveController::getRightX, drivetrain)
     );
 
     climberSubsystem.setDefaultCommand(
