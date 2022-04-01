@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.misc.Constants.AutoConstants;
 import frc.robot.misc.Constants.DriveConstants;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.drive.DrivetrainSubsystem;
 
 public class trajectoryDrive extends CommandBase {
   DrivetrainSubsystem drivetrain;
