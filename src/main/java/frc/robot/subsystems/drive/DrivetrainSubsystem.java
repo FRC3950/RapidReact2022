@@ -121,7 +121,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Encoder Left: ", getLeftEncoderCount());
       SmartDashboard.putNumber("Encoder Right", getRightEncoderCount());
       SmartDashboard.putNumber("Average Encoder: ", Odometry.getAverageEncoderCount());
-      SmartDashboard.putNumber("Distance Traveled(M)", Odometry.nativeUnitsToDistanceMeters(Odometry.getAverageEncoderCount()));
       SmartDashboard.putNumber("Heading: ", getAngle());
 
       SmartDashboard.putNumber("Left Velocity", Odometry.nativeUnitsToVelocity(leftM.getSelectedSensorVelocity()));
@@ -134,6 +133,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     
     SmartDashboard.putNumber("Left encoder(m)", Odometry.nativeUnitsToDistanceMeters(leftM.getSelectedSensorPosition()));
     SmartDashboard.putNumber("Right encoder(m)", Odometry.nativeUnitsToDistanceMeters(rightM.getSelectedSensorPosition()));
+    SmartDashboard.putNumber("Distance Traveled(M)", Odometry.nativeUnitsToDistanceMeters(Odometry.getAverageEncoderCount()));
+
 
     // Update the odometry in the periodic block 
     m_odometry.update( 
