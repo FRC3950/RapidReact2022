@@ -6,7 +6,9 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.misc.DashboardSettings;
 
 public class LimelightSubsystem extends SubsystemBase {
   /** Creates a new LimelightSubsystem. */
@@ -25,6 +27,7 @@ public class LimelightSubsystem extends SubsystemBase {
     ty = table.getEntry("ty").getDouble(0.0);
     tv = (int) table.getEntry("tv").getDouble(0.0);
   }
+
 
   public double getHorizOffset(){
     return tx;

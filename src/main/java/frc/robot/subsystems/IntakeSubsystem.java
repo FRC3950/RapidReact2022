@@ -56,6 +56,6 @@ public class IntakeSubsystem extends SubsystemBase {
   /** @param up - kForward if true and kReverse if false */
   public void setSolenoid(boolean isUp){
     if(isUp) solenoid.set(Constants.States.UP);
-    if(isUp == false) solenoid.set(Constants.States.DOWN);
+    else solenoid.set(Constants.States.DOWN);
   }
 }

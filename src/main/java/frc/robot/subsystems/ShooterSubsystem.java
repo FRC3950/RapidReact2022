@@ -135,7 +135,6 @@ public class ShooterSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
-
     SmartDashboard.putBoolean("Indexer", irBeams[0].get());
     SmartDashboard.putBoolean("Conveyor", irBeams[1].get());
 

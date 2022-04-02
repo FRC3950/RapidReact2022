@@ -3,6 +3,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/ClimberSubsystem": "Subsystem",
+      "/LiveWindow/DashboardSettings": "Subsystem",
       "/LiveWindow/DrivetrainSubsystem": "Subsystem",
       "/LiveWindow/IntakeSubsystem": "Subsystem",
       "/LiveWindow/LimelightSubsystem": "Subsystem",
@@ -25,7 +26,26 @@
       "/LiveWindow/Ungrouped/Talon SRX [19]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [4]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [9]": "Motor Controller",
-      "/SmartDashboard/Auto command selection": "String Chooser"
+      "/SmartDashboard/Auto command selection": "String Chooser",
+      "/SmartDashboard/Mode": "String Chooser",
+      "/SmartDashboard/Subsystem": "String Chooser"
+    },
+    "windows": {
+      "/SmartDashboard/Mode": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Subsystem": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "SmartDashboard": {
+      "open": true
     }
   }
 }

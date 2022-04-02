@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.teleop.*;
+import frc.robot.misc.DashboardSettings;
 import frc.robot.misc.Constants.AutoConstants;
 import frc.robot.misc.Constants.DriveConstants;
 import frc.robot.commands.auto.autoCommands.*;
@@ -54,38 +55,14 @@ public class RobotContainer {
   private final ShootCommand lowShootCommand = new ShootCommand(8500, 3495, shooterSubsystem, intakeSubsystem);
   private final ShootCommand farShootCommand = new ShootCommand(13027, 11990, shooterSubsystem, intakeSubsystem);
   private final ShootCommand hailMaryShootCommand = new ShootCommand(15833, 19000, shooterSubsystem, intakeSubsystem);
+  private final ShootCommand maxShootCommand = new ShootCommand(19000, 19000, shooterSubsystem, intakeSubsystem);
 
-  private final CenterCommand centerCommand = new CenterCommand(drivetrain, limelight);
-
-  //Auto commands:
-  private final AutoEncoderDrive autoEncoderDrive = new AutoEncoderDrive(100000, 0.75, drivetrain);
-  private final AutoShootCommand autoShootCommand = new AutoShootCommand(11027.0, 9990.0, 6, shooterSubsystem);
-
- /** Voltage constraint found in {@link Trajectory} */
-
-//Auto Trajectory
-  private RamseteCommand ramseteCommand = new RamseteCommand(
-    AutoTrajectories.exampleTrajectory,
-    drivetrain::getPose,
-    new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-    new SimpleMotorFeedforward(
-      DriveConstants.ksVolts,
-      DriveConstants.kvVoltSecondsPerMeter,
-      DriveConstants.kaVoltSecondsSquaredPerMeter
-    ),
-    DriveConstants.kDriveKinematics,
-    drivetrain::getWheelSpeeds,
-    new PIDController(DriveConstants.kPDriveVel, 0, 0),
-    new PIDController(DriveConstants.kPDriveVel, 0, 0),
-    // RamseteCommand passes volts to the callback
-    drivetrain::tankDriveVolts,
-    drivetrain
-  );
-
+  private final LimelightCenterCommand limelightCenterCommand = new LimelightCenterCommand(limelight, drivetrain);//Command groups:
 
   //Command groups:
   private final TwoBallAutoSequence twoBallAuto = new TwoBallAutoSequence(drivetrain, shooterSubsystem, intakeSubsystem);
   private final OneBallAutoSequence oneBallAuto = new OneBallAutoSequence(drivetrain, shooterSubsystem);
+  private final TrajectoryDrive trajectoryDrive = new TrajectoryDrive(drivetrain);
 
   //Controllers:
   private final XboxController xboxController = new XboxController(0);
@@ -93,8 +70,28 @@ public class RobotContainer {
 
   //Choosers: 
   private SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private DashboardSettings subsystemViews = new DashboardSettings(limelight, drivetrain, shooterSubsystem);
 
- 
+
+  /** Example RAMSETE command now found in {@link AutoTrajectories} */
+  // private RamseteCommand ramseteCommand = new RamseteCommand(
+  //   AutoTrajectories.exampleTrajectory,
+  //   drivetrain::getPose,
+  //   new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+  //   new SimpleMotorFeedforward(
+  //     DriveConstants.ksVolts,
+  //     DriveConstants.kvVoltSecondsPerMeter,
+  //     DriveConstants.kaVoltSecondsSquaredPerMeter
+  //   ),
+  //   DriveConstants.kDriveKinematics,
+  //   drivetrain::getWheelSpeeds,
+  //   new PIDController(DriveConstants.kPDriveVel, 0, 0),
+  //   new PIDController(DriveConstants.kPDriveVel, 0, 0),
+  //   // RamseteCommand passes volts to the callback
+  //   drivetrain::tankDriveVolts,
+  //   drivetrain
+  // );
+
   public RobotContainer() {
     
     configureButtonBindings();
@@ -102,9 +99,7 @@ public class RobotContainer {
     //Autochooser options:
     autoChooser.addOption("2 ball auto sequence", twoBallAuto);
     autoChooser.addOption("1 ball auto sequence", oneBallAuto);
-    autoChooser.addOption("Trajectory", ramseteCommand);
-
-    //Smartdashboard:
+    autoChooser.addOption("Trajectory", trajectoryDrive);
     SmartDashboard.putData("Auto command selection", autoChooser);
 
     //Default Commands:
@@ -144,18 +139,19 @@ public class RobotContainer {
       .whenPressed(climberSubsystem::toggleSolenoid);
 
    
-    //Joystick buttons:
+    //Drive controller buttons:
     new JoystickButton(driveController, XboxController.Button.kRightBumper.value)
       .whenPressed(drivetrain::toggleDriveGear);
+
+    new JoystickButton(driveController, XboxController.Button.kLeftBumper.value)
+      .whenPressed(drivetrain::toggleHalvedSpeed)
+      .whenReleased(drivetrain::toggleHalvedSpeed);
 
     new JoystickButton(driveController, XboxController.Button.kStart.value)
       .whenPressed(drivetrain::toggleInvertDrive);
 
-    new JoystickButton(driveController, XboxController.Button.kLeftBumper.value)
-      .whenPressed(drivetrain::toggleHalvedSpeed);
-
-   // new JoystickButton(drivestick, 2)
-     // .whenPressed(centerCommand);
+    new JoystickButton(driveController, XboxController.Button.kY.value)
+      .toggleWhenPressed(limelightCenterCommand);
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

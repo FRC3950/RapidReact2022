@@ -3,64 +3,62 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 
 public abstract class Odometry extends DrivetrainSubsystem{
-    //TODO: put all of the odometry stuff from DrivetrainSubsystem in here
 
-    public static int distanceToNativeUnits(double positionMeters){ 
+    public static synchronized int distanceToNativeUnits(double positionMeters){ 
 
-        double wheelRotations = positionMeters/(2 * Math.PI * Units.inchesToMeters(2)); 
+      double wheelRotations = positionMeters/(2 * Math.PI * Units.inchesToMeters(2)); 
+      double motorRotations = wheelRotations * DrivetrainSubsystem.kGearRatio; 
     
-        double motorRotations = wheelRotations * DrivetrainSubsystem.kGearRatio; 
+      int sensorCounts = (int)(motorRotations * 2048); 
     
-        int sensorCounts = (int)(motorRotations * 2048); 
-    
-        return sensorCounts; 
+      return sensorCounts; 
     
     } 
     
-      public static synchronized int velocityToNativeUnits(double velocityMetersPerSecond){ 
+    public static synchronized int velocityToNativeUnits(double velocityMetersPerSecond){ 
     
-        double wheelRotationsPerSecond = velocityMetersPerSecond/(2 * Math.PI * Units.inchesToMeters(2)); 
+      double wheelRotationsPerSecond = velocityMetersPerSecond/(2 * Math.PI * Units.inchesToMeters(2)); 
     
-        double motorRotationsPerSecond = wheelRotationsPerSecond * DrivetrainSubsystem.kGearRatio;  
-        double motorRotationsPer100ms = motorRotationsPerSecond / 10; 
+      double motorRotationsPerSecond = wheelRotationsPerSecond * DrivetrainSubsystem.kGearRatio;  
+      double motorRotationsPer100ms = motorRotationsPerSecond / 10; 
     
-        int sensorCountsPer100ms = (int)(motorRotationsPer100ms * 2048); 
+      int sensorCountsPer100ms = (int)(motorRotationsPer100ms * 2048); 
     
-        return sensorCountsPer100ms;
-      } 
+      return sensorCountsPer100ms;
+    } 
     
-      public static synchronized double nativeUnitsToVelocity(double ticksPer100ms){ 
+    public static synchronized double nativeUnitsToVelocity(double ticksPer100ms){ 
     
-        double rotationPer100ms = ticksPer100ms / 2048;
-        double rotationPerSec = rotationPer100ms * 10;
-        double wheelRotPerSec = rotationPerSec / DrivetrainSubsystem.kGearRatio;
-        double wheelVelocity = wheelRotPerSec * (2 * Math.PI * Units.inchesToMeters(2));
+      double rotationPer100ms = ticksPer100ms / 2048;
+      double rotationPerSec = rotationPer100ms * 10;
+      double wheelRotPerSec = rotationPerSec / DrivetrainSubsystem.kGearRatio;
+      double wheelVelocity = wheelRotPerSec * (2 * Math.PI * Units.inchesToMeters(2));
     
-        return wheelVelocity; // In Meters per second
-      } 
+      return wheelVelocity; // In Meters per second
+    } 
     
-      public static synchronized double nativeUnitsToDistanceMeters(double sensorCounts){ 
+    public static synchronized double nativeUnitsToDistanceMeters(double sensorCounts){ 
     
-        double motorRotations = (double) sensorCounts / 2048; 
+      double motorRotations = (double) sensorCounts / 2048; 
     
-        double wheelRotations = motorRotations / DrivetrainSubsystem.kGearRatio; 
+      double wheelRotations = motorRotations / DrivetrainSubsystem.kGearRatio; 
     
-        double positionMeters = wheelRotations * (2 * Math.PI * Units.inchesToMeters(2)); 
+      double positionMeters = wheelRotations * (2 * Math.PI * Units.inchesToMeters(2)); 
     
-        return positionMeters;
-      } 
+      return positionMeters;
+    } 
 
-      public static synchronized double getAverageEncoderCount(){  
-        return (leftM.getSelectedSensorPosition() - rightM.getSelectedSensorPosition() ) / 2.0; 
-      } 
+    public static synchronized double getAverageEncoderCount(){  
+      return (leftM.getSelectedSensorPosition() - rightM.getSelectedSensorPosition() ) / 2.0; 
+    } 
     
-      /**
-       * Gets the average distance of the two encoders in METERS.
-       *
-       * @return the average of the two encoder readings in METERS
-       */
-      public static synchronized double getAverageEncoderDistance() {
-        return Odometry.nativeUnitsToDistanceMeters(getAverageEncoderCount());
-      }
+    /**
+     * Gets the average distance of the two encoders in METERS.
+     *
+     * @return the average of the two encoder readings in METERS
+     */
+    public static synchronized double getAverageEncoderDistance() {
+      return Odometry.nativeUnitsToDistanceMeters(getAverageEncoderCount());
+    }
 
 }

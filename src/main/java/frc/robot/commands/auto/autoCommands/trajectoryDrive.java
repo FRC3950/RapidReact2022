@@ -35,15 +35,17 @@ public class TrajectoryDrive extends CommandBase {
   public TrajectoryDrive (DrivetrainSubsystem drivetrain) {
     this.drivetrain = drivetrain;
     addRequirements(drivetrain);
+
     // Create a voltage constraint to ensure we don't accelerate too fast
     var autoVoltageConstraint =
-        new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(
-                DriveConstants.ksVolts,
-                DriveConstants.kvVoltSecondsPerMeter,
-                DriveConstants.kaVoltSecondsSquaredPerMeter),
-            DriveConstants.kDriveKinematics,
-            10);
+      new DifferentialDriveVoltageConstraint(
+          new SimpleMotorFeedforward(
+              DriveConstants.ksVolts,
+              DriveConstants.kvVoltSecondsPerMeter,
+              DriveConstants.kaVoltSecondsSquaredPerMeter),
+          DriveConstants.kDriveKinematics,
+          10
+      );
 
 // Create config for trajectory
     TrajectoryConfig config = AutoTrajectories.config;

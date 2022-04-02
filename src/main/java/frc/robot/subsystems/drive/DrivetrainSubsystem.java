@@ -9,9 +9,11 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.misc.Constants;
+import frc.robot.misc.DashboardSettings;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -42,13 +44,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final DifferentialDrive m_drive = new DifferentialDrive(leftM, rightS);
 
   //Gyro
-  private static final ADIS16470_IMU gyro = new ADIS16470_IMU();
+  private final ADIS16470_IMU gyro = new ADIS16470_IMU();
 
   // Odometry class for tracking robot pose 
   private final DifferentialDriveOdometry m_odometry; 
     
   //Gear Shifter
-  private final DoubleSolenoid solenoid = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, 1, 5);
+  private final DoubleSolenoid shifter = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, 1, 5);
   
   //Subsystem's Timer
   private final Timer time = new Timer();
@@ -66,7 +68,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private boolean speedIsHalved = false;
   private boolean driveIsInverted = false;
 
-  private boolean allowTurnInPlace = true;
 
   /** Creates a new DrivetrainSubsystem. */
   public DrivetrainSubsystem() {
@@ -92,31 +93,32 @@ public class DrivetrainSubsystem extends SubsystemBase {
     //Calibrates Position of robot for Auto
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(gyro.getAngle())); //That was a nightmare to figure out :/ 
 
- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //Sets the gear to - low/high?????
-    solenoid.set(Value.kReverse); 
+    shifter.set(Value.kReverse); 
 
   }
 
   @Override
   public void periodic() {
     
-    s = getTime(); 
-
     //toggle true/false to get rid of smartDashboard INFO
-    if(true){
+    if(DashboardSettings.isInInfoMode(this)){
+    
       SmartDashboard.putNumber("Encoder Left: ", getLeftEncoderCount());
       SmartDashboard.putNumber("Encoder Right", getRightEncoderCount());
       SmartDashboard.putNumber("Average Encoder: ", Odometry.getAverageEncoderCount());
-      SmartDashboard.putNumber("Distance Traveled(M)", Odometry.nativeUnitsToDistanceMeters(Odometry.getAverageEncoderCount()));
+      SmartDashboard.putNumber("Distance Traveled (m)", Odometry.nativeUnitsToDistanceMeters(Odometry.getAverageEncoderCount()));
+
+      SmartDashboard.putNumber("Left encoder (m)", Odometry.nativeUnitsToDistanceMeters(leftM.getSelectedSensorPosition()));
+      SmartDashboard.putNumber("right encoder (m)", -1*Odometry.nativeUnitsToDistanceMeters(rightM.getSelectedSensorPosition()));
+
       SmartDashboard.putNumber("Heading: ", getAngle());
       //Research how to put field and rotation pose on Dashboard!
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////
     }
-    
-    SmartDashboard.putNumber("Left encoder(m)", Odometry.nativeUnitsToDistanceMeters(leftM.getSelectedSensorPosition()));
-    SmartDashboard.putNumber("right encoder(m)", -1*Odometry.nativeUnitsToDistanceMeters(rightM.getSelectedSensorPosition()));
+
+
 
     // Update the odometry in the periodic block 
     m_odometry.update( 
@@ -133,71 +135,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   }
 
-
-//Rotation2d.fromDegrees(gyro.getAngle()) This too forever to figure out!!!!
-
-/**
- * Returns the currently-estimated pose of the robot.
- * 
- * @return The pose.
- */
-public Pose2d getPose(){
-  return m_odometry.getPoseMeters();
-}
-
-/**
-   * Returns the current wheel speeds of the robot.
-   *
-   * @return The current wheel speeds.
-   */
-  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(
-    Odometry.nativeUnitsToVelocity(leftM.getSelectedSensorVelocity()), 
-    Odometry.nativeUnitsToVelocity(rightM.getSelectedSensorVelocity()));
-  }
-
-/**
-   * Resets the odometry to the specified pose.
-   *
-   * @param pose The pose to which to set the odometry.
-   */
-  public void resetOdometry(Pose2d pose) {
-    resetEncoders();
-    m_odometry.resetPosition(pose, Rotation2d.fromDegrees(gyro.getAngle()));
-  }
-
-  /**
-   * Controls the left and right sides of the drive directly with voltages.
-   *
-   * @param leftVolts the commanded left output
-   * @param rightVolts the commanded right output
-   */
-  public void tankDriveVolts(double leftVolts, double rightVolts) {
-    leftM.setVoltage(leftVolts);
-    rightM.setVoltage(rightVolts);
-    m_drive.feed();
-  }
-
-  /**
-   * Sets the max output of the drive. Useful for scaling the drive to drive more slowly.
-   *
-   * @param maxOutput the maximum output to which the drive will be constrained
-   */
-  public void setMaxOutput(double maxOutput) {
-    m_drive.setMaxOutput(maxOutput);
-  }
-
+  //Teleop driving: 
   public void toggleDriveGear(){
-    if(solenoid.get() == Value.kReverse){
-      solenoid.set(Value.kForward);
+    if(shifter.get() == Value.kReverse){
+      shifter.set(Value.kForward);
     }
-    else if(solenoid.get() != Value.kReverse){
-      solenoid.set(Value.kReverse);
+    else if(shifter.get() != Value.kReverse){
+      shifter.set(Value.kReverse);
     }
   }
 
   public void shiftBack(){
-    solenoid.set(Value.kReverse);
+    shifter.set(Value.kReverse);
   }
 
   public void teleDrive(double x, double y){
@@ -228,10 +177,61 @@ public Pose2d getPose(){
     speedIsHalved = !speedIsHalved;
   }
 
+  //Rotation2d.fromDegrees(gyro.getAngle()) This took forever to figure out!!!!
+  /**
+   * Returns the currently-estimated pose of the robot.
+   * 
+   * @return The pose.
+   */
+  public Pose2d getPose(){
+    return m_odometry.getPoseMeters();
+  }
+
+  /**
+   * Returns the current wheel speeds of the robot.
+   *
+   * @return The current wheel speeds.
+   */
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(
+    Odometry.nativeUnitsToVelocity(leftM.getSelectedSensorVelocity()), 
+    Odometry.nativeUnitsToVelocity(rightM.getSelectedSensorVelocity()));
+  }
+
+  /**
+   * Resets the odometry to the specified pose.
+   *
+   * @param pose The pose to which to set the odometry.
+   */
+  public void resetOdometry(Pose2d pose) {
+    resetEncoders();
+    m_odometry.resetPosition(pose, Rotation2d.fromDegrees(gyro.getAngle()));
+  }
+
+  /**
+   * Controls the left and right sides of the drive directly with voltages.
+   *
+   * @param leftVolts the commanded left output
+   * @param rightVolts the commanded right output
+   */
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
+    leftM.setVoltage(leftVolts);
+    rightM.setVoltage(rightVolts);
+    m_drive.feed();
+  }
+
+  /**
+   * Sets the max output of the drive. Useful for scaling the drive to drive more slowly.
+   *
+   * @param maxOutput the maximum output to which the drive will be constrained
+   */
+  public void setMaxOutput(double maxOutput) {
+    m_drive.setMaxOutput(maxOutput);
+  }
+
+
 ////////////Encoder//////////////////
 ///////////Gyro/////////////////////
-//////////Conversions///////////////
-
 
   public void setEncoderCount(double count){ 
     leftM.getSensorCollection().setIntegratedSensorPosition(count, 0); 
@@ -278,7 +278,7 @@ public Pose2d getPose(){
   }
 
 
-//Timer Getters & Restarts
+  //Timer Getters & Restarts
   public double getTime(){ return time.get(); } 
   public void restartTime(){    time.reset();    time.start(); } 
 
