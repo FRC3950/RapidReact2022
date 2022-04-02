@@ -41,7 +41,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   protected static final WPI_TalonFX rightS = new WPI_TalonFX(Constants.rightS);
 
   //Robot's Drive
-  private final DifferentialDrive m_drive = new DifferentialDrive(leftM, rightS);
+  private final DifferentialDrive m_drive;
 
   //Gyro
   private final ADIS16470_IMU gyro = new ADIS16470_IMU();
@@ -72,9 +72,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
   /** Creates a new DrivetrainSubsystem. */
   public DrivetrainSubsystem() {
 
+
     //Motors Coast/Break
     leftM.setNeutralMode(NeutralMode.Coast); 
     rightM.setNeutralMode(NeutralMode.Coast); 
+    leftS.setNeutralMode(NeutralMode.Coast); 
+    rightS.setNeutralMode(NeutralMode.Coast); 
+
+    //Motors Invert
+    rightM.setInverted(true);
+    rightS.setInverted(true);
+
+    m_drive = new DifferentialDrive(leftM, rightM);
+
 
     //Slave follows Master
     leftS.follow(leftM); 
@@ -83,6 +93,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     //Motors default sensor - Integrated
     leftM.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor); 
     rightM.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor); 
+    // leftM.setSensorPhase(true);
+    // rightM.setSensorPhase(false);
 
     //Zero two front drive encoders
     setEncoderCount(0); 
@@ -114,10 +126,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("right encoder (m)", -1*Odometry.nativeUnitsToDistanceMeters(rightM.getSelectedSensorPosition()));
 
       SmartDashboard.putNumber("Heading: ", getAngle());
+
+      SmartDashboard.putNumber("Left Velocity", Odometry.nativeUnitsToVelocity(leftM.getSelectedSensorVelocity()));
+      SmartDashboard.putNumber("Right Velocity", Odometry.nativeUnitsToVelocity(rightM.getSelectedSensorVelocity()));
+
+
       //Research how to put field and rotation pose on Dashboard!
       ///////////////////////////////////////////////////////////
     }
-
 
 
     // Update the odometry in the periodic block 
@@ -247,7 +263,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   } 
 
   public static double getRightEncoderCount(){ 
-    return -rightM.getSelectedSensorPosition(); 
+    return rightM.getSelectedSensorPosition(); 
   } 
 
   //Gyro - getters and resseters 

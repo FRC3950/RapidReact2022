@@ -48,17 +48,17 @@ public abstract class Odometry extends DrivetrainSubsystem{
       return positionMeters;
     } 
 
-    public static synchronized double getAverageEncoderCount(){  
-      return (leftM.getSelectedSensorPosition() - rightM.getSelectedSensorPosition() ) / 2.0; 
-    } 
+      public static synchronized double getAverageEncoderCount(){  
+        return (leftM.getSelectedSensorPosition() + rightM.getSelectedSensorPosition() ) / 2.0;  //Might not be + 
+      } 
     
-    /**
-     * Gets the average distance of the two encoders in METERS.
-     *
-     * @return the average of the two encoder readings in METERS
-     */
-    public static synchronized double getAverageEncoderDistance() {
-      return Odometry.nativeUnitsToDistanceMeters(getAverageEncoderCount());
-    }
+      /**
+       * Gets the average distance of the two encoders in METERS.
+       *
+       * @return the average of the two encoder readings in METERS
+       */
+      public static synchronized double getAverageEncoderDistance() {
+        return Odometry.nativeUnitsToDistanceMeters(getAverageEncoderCount());
+      }
 
 }
