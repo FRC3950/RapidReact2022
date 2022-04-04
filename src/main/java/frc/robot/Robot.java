@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   
-  // String trajectoryJSON = "paths/YourPath.wpilib.json";
+  // String trajectoryJSON = "paths/BlueHumanOneTwo.wpilib.json";
   // static Trajectory trajectory1 = new Trajectory();
 
   @Override
