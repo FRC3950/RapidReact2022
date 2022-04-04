@@ -33,7 +33,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final WPI_TalonSRX conveyor = new WPI_TalonSRX(Constants.conveyor);
   private final WPI_TalonSRX indexer = new WPI_TalonSRX(Constants.indexer);
 
-  private DigitalInput[] irBeams = new DigitalInput[] {
+  private static DigitalInput[] irBeams = new DigitalInput[] {
     new DigitalInput(3),
     new DigitalInput(5)
   };
@@ -127,7 +127,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   /** @return conveyor sensor [0] value and indexer sensor [1] value */
- public boolean[] getSensorValues(){
+ public static boolean[] getSensorValues(){
    return new boolean[] {
       irBeams[0].get(),
       irBeams[1].get()
@@ -135,6 +135,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
+
     SmartDashboard.putBoolean("Indexer", irBeams[0].get());
     SmartDashboard.putBoolean("Conveyor", irBeams[1].get());
 

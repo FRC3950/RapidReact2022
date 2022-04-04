@@ -36,11 +36,12 @@ public class RamseteDriveCommand extends RamseteCommand {
       new PIDController(DriveConstants.kPDriveVel, 0, 0),
       // RamseteCommand passes volts to the callback
       drivetrain::tankDriveVolts,
-      drivetrain);
+      drivetrain
+    );
 
 // this.resetPosition = true;
-this.trajectory = trajectory;
-this.drivetrain = drivetrain;
+    this.trajectory = trajectory;
+    this.drivetrain = drivetrain;
 
     // Use addRequirements() here to declare subsystem dependencies.
 
@@ -51,13 +52,11 @@ this.drivetrain = drivetrain;
   public void initialize() {
 
     super.initialize();
-
-        drivetrain.setLowGear();
+    drivetrain.setLowGear();
 
   //       if (resetPosition) {
   //           drivetrain.resetOdometry(trajectory.getInitialPose());
-  // }
-
+  // 
   }
   // Called every time the scheduler runs while the command is scheduled.
   //Not going to overide other methods...

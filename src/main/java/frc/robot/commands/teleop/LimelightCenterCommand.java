@@ -29,14 +29,16 @@ public class LimelightCenterCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(limelight.getHorizOffset() > -2.5){
-      drivetrain.turn(0.3);
-    }
-    else if(limelight.getHorizOffset() < 2.5){
-      drivetrain.turn(-0.3); // <-- Might need to change direction or P values 
-    }
-    else {
-      isFinished = true;
+    if(limelight.hasTarget()){
+      if(limelight.getHorizOffset() > -2.5){
+        drivetrain.turn(0.3);
+      }
+      else if(limelight.getHorizOffset() < 2.5){
+        drivetrain.turn(-0.3); // <-- Might need to change direction or P values 
+      }
+      else {
+        isFinished = true;
+      }
     }
   }
 

@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.teleop.*;
 import frc.robot.misc.DashboardSettings;
+import frc.robot.misc.LedSubsystem;
 import frc.robot.misc.Constants.AutoConstants;
 import frc.robot.misc.Constants.DriveConstants;
 import frc.robot.commands.auto.autoCommands.*;
@@ -46,6 +47,7 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+  private final LedSubsystem leds = new LedSubsystem();
 
   //Commands:
   private final IntakeCommand intakeCommand = new IntakeCommand(intakeSubsystem, shooterSubsystem);
@@ -55,15 +57,14 @@ public class RobotContainer {
   private final ShootCommand lowShootCommand = new ShootCommand(8500, 3495, shooterSubsystem, intakeSubsystem);
   private final ShootCommand farShootCommand = new ShootCommand(13027, 11990, shooterSubsystem, intakeSubsystem);
   private final ShootCommand hailMaryShootCommand = new ShootCommand(15833, 19000, shooterSubsystem, intakeSubsystem);
-  private final ShootCommand maxShootCommand = new ShootCommand(19000, 19000, shooterSubsystem, intakeSubsystem);
-
-  private final RamseteDriveCommand blueHuman_TwoBalls_Stage1 = new RamseteDriveCommand(drivetrain, Robot.trajectory1);
+  private final ShootCommand maxShootCommand = new ShootCommand(18500, 18500, shooterSubsystem, intakeSubsystem);
 
   private final LimelightCenterCommand limelightCenterCommand = new LimelightCenterCommand(limelight, drivetrain);//Command groups:
 
   //Command groups:
   private final TwoBallAutoSequence twoBallAuto = new TwoBallAutoSequence(drivetrain, shooterSubsystem, intakeSubsystem);
   private final OneBallAutoSequence oneBallAuto = new OneBallAutoSequence(drivetrain, shooterSubsystem);
+  private final RamseteDriveCommand blueHuman_TwoBalls_Stage1 = new RamseteDriveCommand(drivetrain, Robot.trajectory1);
   // private final TrajectoryDrive trajectoryDrive = new TrajectoryDrive(drivetrain);
 
   //Controllers:

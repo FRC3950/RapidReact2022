@@ -67,6 +67,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private boolean speedIsHalved = false;
   private boolean driveIsInverted = false;
+  private boolean allowTurnInPlace = true;
 
 
   /** Creates a new DrivetrainSubsystem. */
@@ -84,7 +85,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     rightS.setInverted(true);
 
     m_drive = new DifferentialDrive(leftM, rightM);
-
 
     //Slave follows Master
     leftS.follow(leftM); 
@@ -176,6 +176,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     else {
       m_drive.arcadeDrive(filterX.calculate(x * direction), filterTwist.calculate(-y * direction));
     } 
+  }
+
+  public void curvatureDrive(double x, double y){
+    m_drive.curvatureDrive(x, y, allowTurnInPlace);
   }
 
   public void linearDrive(double speed){
@@ -298,7 +302,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public double getTurnRate() {
     return -gyro.getRate();
   }
-
 
   //Timer Getters & Restarts
   public double getTime(){ return time.get(); } 
