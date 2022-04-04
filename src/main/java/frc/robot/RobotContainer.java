@@ -57,12 +57,14 @@ public class RobotContainer {
   private final ShootCommand hailMaryShootCommand = new ShootCommand(15833, 19000, shooterSubsystem, intakeSubsystem);
   private final ShootCommand maxShootCommand = new ShootCommand(19000, 19000, shooterSubsystem, intakeSubsystem);
 
+  private final RamseteDriveCommand blueHuman_TwoBalls_Stage1 = new RamseteDriveCommand(drivetrain, Robot.trajectory1);
+
   private final LimelightCenterCommand limelightCenterCommand = new LimelightCenterCommand(limelight, drivetrain);//Command groups:
 
   //Command groups:
   private final TwoBallAutoSequence twoBallAuto = new TwoBallAutoSequence(drivetrain, shooterSubsystem, intakeSubsystem);
   private final OneBallAutoSequence oneBallAuto = new OneBallAutoSequence(drivetrain, shooterSubsystem);
-  private final TrajectoryDrive trajectoryDrive = new TrajectoryDrive(drivetrain);
+  // private final TrajectoryDrive trajectoryDrive = new TrajectoryDrive(drivetrain);
 
   //Controllers:
   private final XboxController xboxController = new XboxController(0);
@@ -99,8 +101,10 @@ public class RobotContainer {
     //Autochooser options:
     autoChooser.addOption("2 ball auto sequence", twoBallAuto);
     autoChooser.addOption("1 ball auto sequence", oneBallAuto);
-    autoChooser.addOption("Trajectory", trajectoryDrive);
+    autoChooser.addOption("testBlueHumanAutoDrive", blueHuman_TwoBalls_Stage1);
+    //autoChooser.addOption("Trajectory", trajectoryDrive);
     SmartDashboard.putData("Auto command selection", autoChooser);
+    
 
     //Default Commands:
     drivetrain.setDefaultCommand(

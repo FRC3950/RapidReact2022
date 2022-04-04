@@ -32,8 +32,8 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   
-  // String trajectoryJSON = "paths/BlueHumanOneTwo.wpilib.json";
-  // static Trajectory trajectory1 = new Trajectory();
+  String trajectoryJSON = "paths/BlueHumanOneTwo.wpilib.json";
+  static Trajectory trajectory1 = new Trajectory();
 
   @Override
   public void robotInit() {
@@ -41,12 +41,12 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
 
 
-  //   try {
-  //     Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-  //     trajectory1 = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-  //  } catch (IOException ex) {
-  //     DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
-  //  }
+    try {
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+      trajectory1 = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+   } catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+   }
 
 
 

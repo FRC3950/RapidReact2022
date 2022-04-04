@@ -165,6 +165,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     shifter.set(Value.kReverse);
   }
 
+  public void setLowGear(){
+    shifter.set(Value.kReverse);
+  }
+
   public void teleDrive(double x, double y){
     if(speedIsHalved){
       m_drive.arcadeDrive(x * direction * .5, -y * direction * .5);
@@ -202,6 +206,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public Pose2d getPose(){
     return m_odometry.getPoseMeters();
   }
+
+
 
   /**
    * Returns the current wheel speeds of the robot.
