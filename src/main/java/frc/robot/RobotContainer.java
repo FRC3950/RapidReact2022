@@ -76,6 +76,8 @@ public class RobotContainer {
   private DashboardSettings subsystemViews = new DashboardSettings(limelight, drivetrain, shooterSubsystem);
 
 
+  
+
   /** Example RAMSETE command now found in {@link AutoTrajectories} */
   // private RamseteCommand ramseteCommand = new RamseteCommand(
   //   AutoTrajectories.exampleTrajectory,
@@ -105,8 +107,9 @@ public class RobotContainer {
     autoChooser.addOption("testBlueHumanAutoDrive", blueHuman_TwoBalls_Stage1);
     //autoChooser.addOption("Trajectory", trajectoryDrive);
     SmartDashboard.putData("Auto command selection", autoChooser);
-    
+    SmartDashboard.putData("reset heading", new InstantCommand(drivetrain::resetHeadingEncoder,drivetrain));
 
+    
     //Default Commands:
     drivetrain.setDefaultCommand(
       new DefaultDriveCommand(driveController::getLeftY, driveController::getRightX, drivetrain)
