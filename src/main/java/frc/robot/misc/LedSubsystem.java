@@ -13,6 +13,7 @@ import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
+import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.fasterxml.jackson.databind.cfg.ConfigFeature;
 
 public class LedSubsystem extends SubsystemBase {
@@ -20,7 +21,7 @@ public class LedSubsystem extends SubsystemBase {
   private static CANdleConfiguration configAll = new CANdleConfiguration();
 
   private static int channel = 0;
-  private static final int ledCount = 100;
+  private static final int ledCount = 139;
   /** Creates a new ledSubsystem. */
 
   public static enum State{
@@ -63,8 +64,9 @@ public class LedSubsystem extends SubsystemBase {
       }
       else {
         led.animate(
-          new RainbowAnimation(0.35, 0.3, ledCount)
+          new LarsonAnimation(111, 222, 33, 22, 0.9, 139, BounceMode.Front, 7)       // new RainbowAnimation(0.35, 0.3, ledCount)
         );
+        // led.animate(new FireAnimation(0.5, 0.5, ledCount, 0.5, 0.2));
       }
     }
     else {

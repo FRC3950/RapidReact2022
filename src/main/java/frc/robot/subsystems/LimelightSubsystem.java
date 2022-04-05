@@ -27,7 +27,7 @@ public class LimelightSubsystem extends SubsystemBase {
     ty = table.getEntry("ty").getDouble(0.0);
     tv = (int) table.getEntry("tv").getDouble(0.0);
 
-    if(DashboardSettings.isInInfoMode(this)){
+    if(true){
       SmartDashboard.putNumber("tx", tx);
       SmartDashboard.putNumber("ty", ty);
       SmartDashboard.putNumber("tv", tv);
