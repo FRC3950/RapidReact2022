@@ -109,13 +109,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
     //Sets the gear to - low/high?????
     shifter.set(Value.kReverse); 
 
+    
+
   }
 
   @Override
   public void periodic() {
     
     //toggle true/false to get rid of smartDashboard INFO
-    if(DashboardSettings.isInInfoMode(this)){
+    //DashboardSettings.isInInfoMode(this)
+    if(true){
     
       SmartDashboard.putNumber("Encoder Left: ", getLeftEncoderCount());
       SmartDashboard.putNumber("Encoder Right", getRightEncoderCount());
@@ -123,7 +126,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Distance Traveled (m)", Odometry.nativeUnitsToDistanceMeters(Odometry.getAverageEncoderCount()));
 
       SmartDashboard.putNumber("Left encoder (m)", Odometry.nativeUnitsToDistanceMeters(leftM.getSelectedSensorPosition()));
-      SmartDashboard.putNumber("right encoder (m)", -1*Odometry.nativeUnitsToDistanceMeters(rightM.getSelectedSensorPosition()));
+      SmartDashboard.putNumber("right encoder (m)", Odometry.nativeUnitsToDistanceMeters(rightM.getSelectedSensorPosition()));
 
       SmartDashboard.putNumber("Heading: ", getAngle());
 
@@ -174,7 +177,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       m_drive.arcadeDrive(x * direction * .5, -y * direction * .5);
     }
     else {
-      m_drive.arcadeDrive(filterX.calculate(x * direction), filterTwist.calculate(-y * direction));
+      m_drive.arcadeDrive(filterX.calculate(x * direction), y * direction);
     } 
   }
 
@@ -209,6 +212,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public Pose2d getPose(){
     return m_odometry.getPoseMeters();
+  }
+
+  public void resetHeadingEncoder(){
+    leftM.setSelectedSensorPosition(0);
+    rightM.setSelectedSensorPosition(0);
+    gyro.reset();
   }
 
 
