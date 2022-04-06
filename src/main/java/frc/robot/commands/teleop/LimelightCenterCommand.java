@@ -35,14 +35,14 @@ public class LimelightCenterCommand extends CommandBase {
   @Override
   public void execute() {
     if(limelight.hasTarget()){
-      if(limelight.getHorizOffset() > -1.5){
-        speed = limelight.getHorizOffset() / 5;
-        drivetrain.turn(speed + 10);
+      if(limelight.getHorizOffset() > -.75){
+        speed = limelight.getHorizOffset() / 40;
+        drivetrain.turn(speed + .1);
 
       }
-      else if(limelight.getHorizOffset() < 1.5){
-        speed = limelight.getHorizOffset() / 5;
-        drivetrain.turn(speed - 10);
+      else if(limelight.getHorizOffset() < .75){
+        speed = limelight.getHorizOffset() / 40;
+        drivetrain.turn(speed - .1);
 
          // <-- Might need to change direction or P values 
       }
