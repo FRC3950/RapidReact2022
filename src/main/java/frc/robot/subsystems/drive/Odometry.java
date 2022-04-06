@@ -27,7 +27,7 @@ public abstract class Odometry extends DrivetrainSubsystem{
       return sensorCountsPer100ms;
     } 
     
-    public static synchronized double nativeUnitsToVelocity(double ticksPer100ms){ 
+    public static double nativeUnitsToVelocity(double ticksPer100ms){ 
     
       double rotationPer100ms = ticksPer100ms / 2048;
       double rotationPerSec = rotationPer100ms * 10;
@@ -37,7 +37,7 @@ public abstract class Odometry extends DrivetrainSubsystem{
       return wheelVelocity; // In Meters per second
     } 
     
-    public static synchronized double nativeUnitsToDistanceMeters(double sensorCounts){ 
+    public static double nativeUnitsToDistanceMeters(double sensorCounts){ 
     
       double motorRotations = (double) sensorCounts / 2048; 
     
@@ -48,7 +48,7 @@ public abstract class Odometry extends DrivetrainSubsystem{
       return positionMeters;
     } 
 
-      public static synchronized double getAverageEncoderCount(){  
+      public static double getAverageEncoderCount(){  
         return (leftM.getSelectedSensorPosition() + rightM.getSelectedSensorPosition() ) / 2.0;  //Might not be + 
       } 
     
@@ -57,7 +57,7 @@ public abstract class Odometry extends DrivetrainSubsystem{
        *
        * @return the average of the two encoder readings in METERS
        */
-      public static synchronized double getAverageEncoderDistance() {
+      public static double getAverageEncoderDistance() {
         return Odometry.nativeUnitsToDistanceMeters(getAverageEncoderCount());
       }
 

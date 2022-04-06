@@ -65,7 +65,29 @@ public class RobotContainer {
   private final TwoBallAutoSequence twoBallAuto = new TwoBallAutoSequence(drivetrain, shooterSubsystem, intakeSubsystem);
   private final OneBallAutoSequence oneBallAuto = new OneBallAutoSequence(drivetrain, shooterSubsystem);
   private final RamseteDriveCommand blueHuman_TwoBalls_Stage1 = new RamseteDriveCommand(drivetrain, Robot.trajectory1);
-  // private final TrajectoryDrive trajectoryDrive = new TrajectoryDrive(drivetrain);
+
+  
+
+  /** Example RAMSETE command now found in {@link AutoTrajectories} */
+  private RamseteCommand ramseteCommand = new RamseteCommand(
+    //AutoTrajectories.exampleTrajectory,
+    Robot.trajectory1,
+    drivetrain::getPose,
+    new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+    new SimpleMotorFeedforward(
+      DriveConstants.ksVolts,
+      DriveConstants.kvVoltSecondsPerMeter,
+      DriveConstants.kaVoltSecondsSquaredPerMeter
+    ),
+    DriveConstants.kDriveKinematics,
+    drivetrain::getWheelSpeeds,
+    new PIDController(DriveConstants.kPDriveVel, 0, 0),
+    new PIDController(DriveConstants.kPDriveVel, 0, 0),
+    // RamseteCommand passes volts to the callback
+    drivetrain::tankDriveVolts,
+    drivetrain
+  );
+
 
   //Controllers:
   private final XboxController xboxController = new XboxController(0);
@@ -78,25 +100,6 @@ public class RobotContainer {
 
   
 
-  /** Example RAMSETE command now found in {@link AutoTrajectories} */
-  // private RamseteCommand ramseteCommand = new RamseteCommand(
-  //   AutoTrajectories.exampleTrajectory,
-  //   drivetrain::getPose,
-  //   new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-  //   new SimpleMotorFeedforward(
-  //     DriveConstants.ksVolts,
-  //     DriveConstants.kvVoltSecondsPerMeter,
-  //     DriveConstants.kaVoltSecondsSquaredPerMeter
-  //   ),
-  //   DriveConstants.kDriveKinematics,
-  //   drivetrain::getWheelSpeeds,
-  //   new PIDController(DriveConstants.kPDriveVel, 0, 0),
-  //   new PIDController(DriveConstants.kPDriveVel, 0, 0),
-  //   // RamseteCommand passes volts to the callback
-  //   drivetrain::tankDriveVolts,
-  //   drivetrain
-  // );
-
   public RobotContainer() {
     
     configureButtonBindings();
@@ -104,7 +107,7 @@ public class RobotContainer {
     //Autochooser options:
     autoChooser.addOption("2 ball auto sequence", twoBallAuto);
     autoChooser.addOption("1 ball auto sequence", oneBallAuto);
-    autoChooser.addOption("testBlueHumanAutoDrive", blueHuman_TwoBalls_Stage1);
+    autoChooser.addOption("testBlueHumanAutoDrive", ramseteCommand);
     //autoChooser.addOption("Trajectory", trajectoryDrive);
     SmartDashboard.putData("Auto command selection", autoChooser);
     SmartDashboard.putData("reset heading", new InstantCommand(drivetrain::resetHeadingEncoder,drivetrain));
