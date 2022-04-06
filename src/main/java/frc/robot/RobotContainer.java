@@ -107,7 +107,7 @@ public class RobotContainer {
     //Autochooser options:
     autoChooser.addOption("2 ball auto sequence", twoBallAuto);
     autoChooser.addOption("1 ball auto sequence", oneBallAuto);
-    autoChooser.addOption("testBlueHumanAutoDrive", ramseteCommand);
+    autoChooser.addOption("ram Inline Command straight", ramseteCommand);
     //autoChooser.addOption("Trajectory", trajectoryDrive);
     SmartDashboard.putData("Auto command selection", autoChooser);
     SmartDashboard.putData("reset heading", new InstantCommand(drivetrain::resetHeadingEncoder,drivetrain));

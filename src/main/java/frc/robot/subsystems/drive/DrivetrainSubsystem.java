@@ -134,8 +134,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Right Velocity", Odometry.nativeUnitsToVelocity(rightM.getSelectedSensorVelocity()));
 
 
-      System.out.println("Left Veloicty: " + Odometry.nativeUnitsToVelocity(leftM.getSelectedSensorVelocity()) + 
-      " Right Velocity: " + Odometry.nativeUnitsToVelocity(rightM.getSelectedSensorVelocity()) + "  Gyro" + m_odometry.toString());
+      // System.out.println("Left Veloicty: " + Odometry.nativeUnitsToVelocity(leftM.getSelectedSensorVelocity()) + 
+      // " Right Velocity: " + Odometry.nativeUnitsToVelocity(rightM.getSelectedSensorVelocity()) + "  Gyro" + m_odometry.toString());
       //Research how to put field and rotation pose on Dashboard!
       ///////////////////////////////////////////////////////////
     }
