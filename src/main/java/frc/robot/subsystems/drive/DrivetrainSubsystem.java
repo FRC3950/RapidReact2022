@@ -188,11 +188,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   public void linearDrive(double speed){
-    m_drive.arcadeDrive(0, speed);
+    m_drive.arcadeDrive(speed, 0);
   }
 
   public void turn(double speed){
-    m_drive.arcadeDrive(speed, 0);
+    m_drive.arcadeDrive(0, speed);
   }
 
   public void toggleInvertDrive(){
