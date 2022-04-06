@@ -13,6 +13,9 @@ public class LimelightCenterCommand extends CommandBase {
   private final LimelightSubsystem limelight;
   private final DrivetrainSubsystem drivetrain;
 
+  private final double kP = 0.2;
+  private double speed;
+
   boolean isFinished = false;
 
   public LimelightCenterCommand(LimelightSubsystem limelight, DrivetrainSubsystem drivetrain) {
@@ -24,21 +27,25 @@ public class LimelightCenterCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    System.out.println("Command start");
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if(limelight.hasTarget()){
-      if(limelight.getHorizOffset() > -2.5){
-        drivetrain.turn(0.3);
+      if(limelight.getHorizOffset() > -1){
+        speed = limelight.getHorizOffset() / 10;
       }
-      else if(limelight.getHorizOffset() < 2.5){
-        drivetrain.turn(-0.3); // <-- Might need to change direction or P values 
+      else if(limelight.getHorizOffset() < 1){
+        speed = limelight.getHorizOffset() / 10;
+         // <-- Might need to change direction or P values 
       }
-      else {
-        isFinished = true;
-      }
+      drivetrain.turn(speed * .75);
+      // else {
+      //   isFinished = true;
+      // }
     }
   }
 
@@ -51,6 +58,6 @@ public class LimelightCenterCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isFinished;
+    return false;
   }
 }

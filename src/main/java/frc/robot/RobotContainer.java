@@ -55,7 +55,7 @@ public class RobotContainer {
 
   private final ShootCommand shootCommand = new ShootCommand(11027, 9990, shooterSubsystem, intakeSubsystem);
   private final ShootCommand lowShootCommand = new ShootCommand(8500, 3495, shooterSubsystem, intakeSubsystem);
-  private final ShootCommand farShootCommand = new ShootCommand(13027, 11990, shooterSubsystem, intakeSubsystem);
+  private final ShootCommand farShootCommand = new ShootCommand(12557.83 + 300 + 500, 15327.57 + 200 + 200, shooterSubsystem, intakeSubsystem);
   private final ShootCommand hailMaryShootCommand = new ShootCommand(15833, 19000, shooterSubsystem, intakeSubsystem);
   private final ShootCommand maxShootCommand = new ShootCommand(18500, 18500, shooterSubsystem, intakeSubsystem);
 
@@ -158,8 +158,8 @@ public class RobotContainer {
     new JoystickButton(driveController, XboxController.Button.kStart.value)
       .whenPressed(drivetrain::toggleInvertDrive);
 
-    new JoystickButton(driveController, XboxController.Button.kY.value)
-      .toggleWhenPressed(limelightCenterCommand);
+    new JoystickButton(driveController, XboxController.Button.kA.value)
+      .whileHeld(limelightCenterCommand);
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
