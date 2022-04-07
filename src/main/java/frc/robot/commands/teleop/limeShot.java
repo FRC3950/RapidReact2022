@@ -27,7 +27,10 @@ public class LimeShot extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    targetspeedB = lime.getTargetVelocities()[0];
+    targetspeedT = lime.getTargetVelocities()[1];
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -35,19 +38,23 @@ public class LimeShot extends CommandBase {
     currentspeedB = Math.abs(shooter.getCurrentVelocities()[0]);
     currentSpeedT = Math.abs(shooter.getCurrentVelocities()[1]);
 
-    targetspeedB = lime.lookupTable()[0];
-    targetspeedT = lime.lookupTable()[1];
+    if(lime.hasTarget()){ //will use values from initialize if ball causes limelight to lose target
+      targetspeedB = lime.getTargetVelocities()[0];
+      targetspeedT = lime.getTargetVelocities()[1];
+    }
     
     shooter.motorOn(-targetspeedB, -targetspeedT);
 
-    if(currentspeedB >= targetspeedB - 550 && currentspeedB <= targetspeedB + 550 
-    && currentSpeedT >= targetspeedT - 550 && currentSpeedT <= targetspeedT + 550){
-      
-      if(shooter.getSensorValues()[0] == true){
-        shooter.setConveyor(0.7);
+    if(lime.isWithinRange()){
+      if(currentspeedB >= targetspeedB - 550 && currentspeedB <= targetspeedB + 550 
+      && currentSpeedT >= targetspeedT - 550 && currentSpeedT <= targetspeedT + 550){
+        
+        if(shooter.getSensorValues()[0] == true){
+          shooter.setConveyor(0.7);
+        }
+        
+        shooter.setIndexer(0.5);
       }
-      
-      shooter.setIndexer(0.5);
     }  
   }
 

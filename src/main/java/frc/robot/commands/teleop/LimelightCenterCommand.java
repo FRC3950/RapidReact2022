@@ -61,6 +61,6 @@ public class LimelightCenterCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return (limelight.getHorizOffset() > -.5 && limelight.getHorizOffset() < 0.5);
   }
 }
