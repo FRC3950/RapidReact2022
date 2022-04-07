@@ -43,17 +43,21 @@ public class LimelightSubsystem extends SubsystemBase {
     return ty;
   }
   
-  // public double[] getTargetVelocities(){
-  //   if(hasTarget()){
-  //     return new double[] {
-  //       (-269.2 - 5) * getVertOffset() + 12260,
-  //       (-131.1) * getVertOffset() + 15210
-  //     }; 
-  //   }
-  //   else{
-  //     return null;
-  //   }
-  // }
+  public double[] getTargetVelocities(){
+    if(hasTarget()){
+      return new double[] {
+        (-63.02 ) * getVertOffset() + 12870,
+        (-212.7) * getVertOffset() + 14970
+      }; 
+    }
+    else {
+      return new double[] {0,0};
+    }
+  }
+
+  public boolean isWithinRange(){
+    return (tx < 0.55 && tx > -0.55);
+  }
   
   //TODO: set velocities in initialize
   public double[] lookupTable(){
