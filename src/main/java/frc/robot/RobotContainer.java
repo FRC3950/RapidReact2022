@@ -58,6 +58,7 @@ public class RobotContainer {
   private final ShootCommand farShootCommand = new ShootCommand(12557.83 + 300 + 500, 15327.57 + 200 + 200, shooterSubsystem, intakeSubsystem);
   private final ShootCommand hailMaryShootCommand = new ShootCommand(15833, 19000, shooterSubsystem, intakeSubsystem);
   private final ShootCommand maxShootCommand = new ShootCommand(18500, 18500, shooterSubsystem, intakeSubsystem);
+  private final LimeShot limeShot = new LimeShot(limelight, shooterSubsystem, intakeSubsystem);
 
   private final LimelightCenterCommand limelightCenterCommand = new LimelightCenterCommand(limelight, drivetrain);//Command groups:
 
@@ -138,7 +139,7 @@ public class RobotContainer {
       .whileHeld(shootCommand);
     
     new JoystickButton(xboxController, XboxController.Button.kB.value)
-      .whileHeld(farShootCommand);
+      .whileHeld(limeShot);
     
     new JoystickButton(xboxController, XboxController.Button.kStart.value)
       .whileHeld(hailMaryShootCommand);

@@ -28,6 +28,7 @@ public class ShootCommand extends CommandBase {
     this.targetspeedT = targetspeedT;
     addRequirements(shooter, intake);
   }
+  
 
   // Called when the command is initially scheduled.
   @Override

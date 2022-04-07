@@ -73,6 +73,6 @@ public class IntakeCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return(!shooter.getSensorValues()[0] && !shooter.getSensorValues()[1]);
   }
 }

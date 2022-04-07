@@ -13,7 +13,7 @@ public class LimelightCenterCommand extends CommandBase {
   private final LimelightSubsystem limelight;
   private final DrivetrainSubsystem drivetrain;
 
-  private final double kP = 0.2;
+  private final double kP = 0.23;
   private double speed;
 
   boolean isFinished = false;
@@ -35,14 +35,14 @@ public class LimelightCenterCommand extends CommandBase {
   @Override
   public void execute() {
     if(limelight.hasTarget()){
-      if(limelight.getHorizOffset() > -.75){
+      if(limelight.getHorizOffset() > -.50){
         speed = limelight.getHorizOffset() / 40;
-        drivetrain.turn(speed + .1);
+        drivetrain.turn(speed + .30);
 
       }
-      else if(limelight.getHorizOffset() < .75){
+      else if(limelight.getHorizOffset() < .50){
         speed = limelight.getHorizOffset() / 40;
-        drivetrain.turn(speed - .1);
+        drivetrain.turn(speed - .30);
 
          // <-- Might need to change direction or P values 
       }

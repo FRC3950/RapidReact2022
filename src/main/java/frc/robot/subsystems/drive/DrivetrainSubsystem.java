@@ -118,7 +118,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     
     //toggle true/false to get rid of smartDashboard INFO
     //DashboardSettings.isInInfoMode(this)
-    if(true){
+    if(false){
     
       SmartDashboard.putNumber("Encoder Left: ", getLeftEncoderCount());
       SmartDashboard.putNumber("Encoder Right", getRightEncoderCount());

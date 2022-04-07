@@ -9,42 +9,54 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
+public class LimeShot extends CommandBase {
+  private final LimelightSubsystem lime;
+  private final ShooterSubsystem shooter;
+  private final IntakeSubsystem intake; 
 
-public class limeShot extends ShootCommand {
-  private final LimelightSubsystem limelight;
-  private final ShooterSubsystem shooterSubsystem;
-  private final IntakeSubsystem intakeSubsystem;
+  double currentspeedB, currentSpeedT;
+  double targetspeedB, targetspeedT;
 
-  
-  /** Creates a new limeShot. */
-  public limeShot(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, LimelightSubsystem limelight) {
+  public LimeShot(LimelightSubsystem lime, ShooterSubsystem shooter, IntakeSubsystem intake) {
+    this.lime = lime;
+    this.shooter = shooter;
+    this.intake = intake;
 
-    super(limelight.getVertOffset()*100, limelight.getVertOffset()*100, shooterSubsystem, intakeSubsystem);
-
-    this.shooterSubsystem = shooterSubsystem;
-    this.limelight = limelight;
-    this.intakeSubsystem = intakeSubsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
-
-    addRequirements(limelight);
+    addRequirements(lime, shooter, intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    super.initialize();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    super.execute();
+    currentspeedB = Math.abs(shooter.getCurrentVelocities()[0]);
+    currentSpeedT = Math.abs(shooter.getCurrentVelocities()[1]);
+
+    targetspeedB = lime.lookupTable()[0];
+    targetspeedT = lime.lookupTable()[1];
+    
+    shooter.motorOn(-targetspeedB, -targetspeedT);
+
+    if(currentspeedB >= targetspeedB - 550 && currentspeedB <= targetspeedB + 550 
+    && currentSpeedT >= targetspeedT - 550 && currentSpeedT <= targetspeedT + 550){
+      
+      if(shooter.getSensorValues()[0] == true){
+        shooter.setConveyor(0.7);
+      }
+      
+      shooter.setIndexer(0.5);
+    }  
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    super.end(interrupted);
+    shooter.motorOn(0, 0);
+    shooter.setConveyor(0.0);
+    shooter.setIndexer(0.0);
   }
 
   // Returns true when the command should end.
