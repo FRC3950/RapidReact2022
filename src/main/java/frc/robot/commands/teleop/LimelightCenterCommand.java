@@ -38,6 +38,7 @@ public class LimelightCenterCommand extends CommandBase {
       if(limelight.getHorizOffset() > -.50){
         speed = limelight.getHorizOffset() / 40;
         drivetrain.turn(speed + .30);
+        //right
 
       }
       else if(limelight.getHorizOffset() < .50){

@@ -68,6 +68,8 @@ public class RobotContainer {
   private final OneBallAutoSequence oneBallAuto = new OneBallAutoSequence(drivetrain, shooterSubsystem);
   private final RamseteDriveCommand blueHuman_TwoBalls_Stage1 = new RamseteDriveCommand(drivetrain, Robot.trajectory1);
 
+  private final ThreeBallExperimental_HumanPlayerSide experiment3 = new ThreeBallExperimental_HumanPlayerSide(drivetrain, shooterSubsystem, intakeSubsystem, limelight);
+
   
 
   /** Example RAMSETE command now found in {@link AutoTrajectories} */
@@ -109,7 +111,8 @@ public class RobotContainer {
     //Autochooser options:
     autoChooser.addOption("2 ball auto sequence", twoBallAuto);
     autoChooser.addOption("1 ball auto sequence", oneBallAuto);
-    autoChooser.addOption("ram Inline Command straight", ramseteCommand);
+    autoChooser.addOption("Experimental 3 ball", experiment3);
+    //autoChooser.addOption("ram Inline Command straight", ramseteCommand);
     //autoChooser.addOption("Trajectory", trajectoryDrive);
     SmartDashboard.putData("Auto command selection", autoChooser);
     SmartDashboard.putData("reset heading", new InstantCommand(drivetrain::resetHeadingEncoder,drivetrain));
