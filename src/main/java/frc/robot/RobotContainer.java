@@ -60,7 +60,8 @@ public class RobotContainer {
   private final ShootCommand maxShootCommand = new ShootCommand(18500, 18500, shooterSubsystem, intakeSubsystem);
   private final LimeShot limeShot = new LimeShot(limelight, shooterSubsystem, intakeSubsystem);
 
-  private final LimelightCenterCommand limelightCenterCommand = new LimelightCenterCommand(limelight, drivetrain);//Command groups:
+  private final LimelightCenterCommand limelightCenterCommand = new LimelightCenterCommand(limelight, drivetrain);
+  private final AlignLimeShot alignLimeShot = new AlignLimeShot(limelight, shooterSubsystem, drivetrain);
 
   //Command groups:
   private final TwoBallAutoSequence twoBallAuto = new TwoBallAutoSequence(drivetrain, shooterSubsystem, intakeSubsystem);

@@ -48,6 +48,12 @@ public class LedSubsystem extends SubsystemBase {
     led.setLEDs(r, g, b);
   }
 
+  public static void setStrobe(int r, int g, int b){
+    led.animate(
+      new StrobeAnimation(r, g, b)
+    );
+  }
+
   public State getSelected(){
     return ledState.getSelected();
   }
