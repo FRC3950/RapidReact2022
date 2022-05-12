@@ -14,7 +14,7 @@ import frc.robot.subsystems.drive.Odometry;
 public class AutoTurn extends CommandBase {
   DrivetrainSubsystem drivetrain;
   double angle, error;
-  double kp = 0.003;
+  double kp = 0.0027;
   boolean isFinished = false;
 
   /** Creates a new AutoTurn. Angle should be entered negative! */
@@ -48,15 +48,15 @@ public class AutoTurn extends CommandBase {
     else{
       drivetrain.turn(0);
       isFinished = true;
-      
     }
-  
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    System.out.println("Auto turn command finished");
+    drivetrain.resetHeadingEncoder();
+  }
 
   // Returns true when the command should end.
   @Override

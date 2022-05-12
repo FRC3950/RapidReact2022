@@ -46,6 +46,7 @@ public class AutoEncoderDrive extends CommandBase {
   public void end(boolean interrupted) {
     drivetrain.resetAngle();
     drivetrain.linearDrive(0);
+    drivetrain.resetEncoders();
   }
 
   // Returns true when the command should end.

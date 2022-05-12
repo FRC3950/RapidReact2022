@@ -7,6 +7,7 @@ package frc.robot.subsystems.drive;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -100,14 +101,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
     setEncoderCount(0); 
 
     //Calibrate gyro for auto
+    gyro.setYawAxis(IMUAxis.kY);
     gyro.calibrate(); 
+    gyro.reset();
+    
 
     //Calibrates Position of robot for Auto
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(gyro.getAngle())); //That was a nightmare to figure out :/ 
 
     ///////////////////////////////////////////////////////////////////////////////////////
     //Sets the gear to - low/high?????
-    shifter.set(Value.kReverse); 
+
+    //high is forward
+    shifter.set(Value.kForward); 
+
+    resetHeadingEncoder();
 
     
 
@@ -118,7 +126,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     
     //toggle true/false to get rid of smartDashboard INFO
     //DashboardSettings.isInInfoMode(this)
-    if(false){
+    if(true){
     
       SmartDashboard.putNumber("Encoder Left: ", getLeftEncoderCount());
       SmartDashboard.putNumber("Encoder Right", getRightEncoderCount());
@@ -172,6 +180,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public void setLowGear(){
     shifter.set(Value.kReverse);
+  }
+
+  public Value getGear(){
+    return shifter.get();
   }
 
   public void teleDrive(double x, double y){

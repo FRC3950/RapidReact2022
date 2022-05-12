@@ -14,12 +14,15 @@ public class LimelightSubsystem extends SubsystemBase {
   /** Creates a new LimelightSubsystem. */
 
   private final NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+  
 
   double tx;
   double ty;
   int tv;
 
-  public LimelightSubsystem() {}
+  public LimelightSubsystem() {
+    //table.getEntry("stream").setNumber(2);
+  }
 
   @Override
   public void periodic() {
@@ -43,11 +46,12 @@ public class LimelightSubsystem extends SubsystemBase {
     return ty;
   }
   
+  /** @return bottom[0] and top[1] target velocities based on angle */
   public double[] getTargetVelocities(){
     if(hasTarget()){
       return new double[] {
-        (-63.02 ) * getVertOffset() + 12870,
-        (-212.7) * getVertOffset() + 14970
+        (-54.16) * getVertOffset() + 11310,
+        (-171.5) * getVertOffset() + 10440
       }; 
     }
     else {

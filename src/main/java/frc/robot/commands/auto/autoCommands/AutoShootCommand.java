@@ -5,13 +5,15 @@
 package frc.robot.commands.auto.autoCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.misc.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 
 public class AutoShootCommand extends CommandBase {
   /** Creates a new AutoShootCommand. */
-  ShooterSubsystem shooter;
+  private final ShooterSubsystem shooter;
+  private final IntakeSubsystem intake;
   private final Timer timer = new Timer();
 
   double time;
@@ -20,8 +22,9 @@ public class AutoShootCommand extends CommandBase {
   double targetspeedB, targetspeedT;
   double currentspeedB, currentSpeedT;
 
-  public AutoShootCommand(double targetspeedB, double targetspeedT, final double time, ShooterSubsystem shooter) {
+  public AutoShootCommand(double targetspeedB, double targetspeedT, final double time, ShooterSubsystem shooter, IntakeSubsystem intake) {
     this.shooter = shooter;
+    this.intake = intake;
     this.time = time; 
     this.targetspeedB = targetspeedB;
     this.targetspeedT = targetspeedT;
@@ -65,6 +68,9 @@ public class AutoShootCommand extends CommandBase {
     shooter.motorOn(0,0);
     shooter.setConveyor(0.0);
     shooter.setIndexer(0.0);
+
+    intake.setSolenoid(Constants.States.DOWN);
+    intake.intake(0.7);
   }
 
   // Returns true when the command should end.

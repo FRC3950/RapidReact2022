@@ -21,9 +21,9 @@ public class TwoBallAutoSequence extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new AutoShootCommand(11027, 9990, 2.0, shooter),
+      new AutoShootCommand(11027, 9990, 2.0, shooter, intake),
       new IntakeDrive(40000, drivetrain, shooter, intake),
-      new AutoShootCommand(12557.83, 15327.57, 4.0, shooter)
+      new AutoShootCommand(12557.83, 15327.57, 4.0, shooter, intake)
     );
   }
 }

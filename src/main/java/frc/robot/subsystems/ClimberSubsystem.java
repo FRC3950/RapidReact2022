@@ -67,11 +67,11 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void togglePivot(){
-    if(pivot.get() == Constants.States.UNLOCKED){
-      pivot.set(Constants.States.LOCKED);
+    if(pivot.get() == Value.kForward){
+      pivot.set(Value.kReverse);
     } 
-    else if(pivot.get() != Constants.States.UNLOCKED){
-      pivot.set(Constants.States.UNLOCKED);
+    else if(pivot.get() != Value.kForward){
+      pivot.set(Value.kForward);
     }
   }
 

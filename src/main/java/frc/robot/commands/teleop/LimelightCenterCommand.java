@@ -36,20 +36,14 @@ public class LimelightCenterCommand extends CommandBase {
   public void execute() {
     if(limelight.hasTarget()){
       if(limelight.getHorizOffset() > -.50){
-        speed = limelight.getHorizOffset() / 40;
+        speed = limelight.getHorizOffset() *.015;
         drivetrain.turn(speed + .30);
-        //right
 
       }
       else if(limelight.getHorizOffset() < .50){
-        speed = limelight.getHorizOffset() / 40;
-        drivetrain.turn(speed - .30);
-
-         // <-- Might need to change direction or P values 
+        speed = limelight.getHorizOffset() *.015;
+        drivetrain.turn(speed - .30); 
       }
-      // else {
-      //   isFinished = true;
-      // }
     }
   }
 
@@ -62,6 +56,6 @@ public class LimelightCenterCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (limelight.getHorizOffset() > -.5 && limelight.getHorizOffset() < 0.5);
+    return (limelight.getHorizOffset() > -0.5 && limelight.getHorizOffset() < 0.5);
   }
 }

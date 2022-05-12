@@ -54,8 +54,8 @@ public class RobotContainer {
   private final OuttakeCommand outtakeCommand = new OuttakeCommand(shooterSubsystem, intakeSubsystem);
 
   private final ShootCommand shootCommand = new ShootCommand(11027, 9990, shooterSubsystem, intakeSubsystem);
-  private final ShootCommand lowShootCommand = new ShootCommand(8500, 3495, shooterSubsystem, intakeSubsystem);
-  private final ShootCommand farShootCommand = new ShootCommand(12557.83 + 300 + 500, 15327.57 + 200 + 200, shooterSubsystem, intakeSubsystem);
+  private final ShootCommand lowShootCommand = new ShootCommand(8500, 3495, /*11327 + 482 + 382 + 200 + 450 + 900, 10290 + 1860 + 1260 + 750 + 740 + 1100, */ shooterSubsystem, intakeSubsystem);
+  private final ShootCommand farShootCommand = new ShootCommand(12557.83 + 300 + 500 + 100, 15327.57 + 200 + 200, shooterSubsystem, intakeSubsystem);
   private final ShootCommand hailMaryShootCommand = new ShootCommand(15833, 19000, shooterSubsystem, intakeSubsystem);
   private final ShootCommand maxShootCommand = new ShootCommand(18500, 18500, shooterSubsystem, intakeSubsystem);
   private final LimeShot limeShot = new LimeShot(limelight, shooterSubsystem, intakeSubsystem);
@@ -65,7 +65,7 @@ public class RobotContainer {
 
   //Command groups:
   private final TwoBallAutoSequence twoBallAuto = new TwoBallAutoSequence(drivetrain, shooterSubsystem, intakeSubsystem);
-  private final OneBallAutoSequence oneBallAuto = new OneBallAutoSequence(drivetrain, shooterSubsystem);
+  private final OneBallAutoSequence oneBallAuto = new OneBallAutoSequence(drivetrain, shooterSubsystem, intakeSubsystem);
   private final RamseteDriveCommand blueHuman_TwoBalls_Stage1 = new RamseteDriveCommand(drivetrain, Robot.trajectory1);
 
   private final ThreeBallExperimental_HumanPlayerSide experiment3 = new ThreeBallExperimental_HumanPlayerSide(drivetrain, shooterSubsystem, intakeSubsystem, limelight);
@@ -143,7 +143,7 @@ public class RobotContainer {
       .whileHeld(shootCommand);
     
     new JoystickButton(xboxController, XboxController.Button.kB.value)
-      .whileHeld(limeShot);
+      .whileHeld(alignLimeShot);
     
     new JoystickButton(xboxController, XboxController.Button.kStart.value)
       .whileHeld(hailMaryShootCommand);
@@ -160,7 +160,7 @@ public class RobotContainer {
       .whenPressed(drivetrain::toggleDriveGear);
 
     new JoystickButton(driveController, XboxController.Button.kLeftBumper.value)
-      .whenPressed(drivetrain::toggleHalvedSpeed)
+      .whileHeld(drivetrain::toggleHalvedSpeed)
       .whenReleased(drivetrain::toggleHalvedSpeed);
 
     new JoystickButton(driveController, XboxController.Button.kStart.value)

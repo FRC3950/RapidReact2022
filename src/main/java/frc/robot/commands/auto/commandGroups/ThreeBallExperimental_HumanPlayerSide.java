@@ -11,6 +11,7 @@ import frc.robot.commands.auto.autoCommands.AutoEncoderDrive;
 import frc.robot.commands.auto.autoCommands.AutoShootCommand;
 import frc.robot.commands.auto.autoCommands.AutoTurn;
 import frc.robot.commands.auto.autoCommands.StartTimer;
+import frc.robot.commands.teleop.AlignLimeShot;
 import frc.robot.commands.teleop.LimeShot;
 import frc.robot.commands.teleop.LimelightCenterCommand;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -27,15 +28,19 @@ public class ThreeBallExperimental_HumanPlayerSide extends SequentialCommandGrou
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(     
-    new AutoShootCommand(11027, 9990, 2.0, shooter),
-    new IntakeDrive(40000, drivetrain, shooter, intake),
-    new AutoShootCommand(12557.83, 15327.57, 4.0, shooter),
-    new AutoTurn(-122.25, drivetrain),
-    new IntakeDrive(40000, drivetrain, shooter, intake),
-    new AutoEncoderDrive(-20000, .6, drivetrain),
-    new AutoTurn(90, drivetrain),
-    new ParallelRaceGroup(new StartTimer(2),new LimelightCenterCommand(lime, drivetrain)),
-    new LimeShot(lime, shooter, intake)
+      new AutoShootCommand(11027, 9990, 2.0, shooter, intake),
+      new IntakeDrive(40000, drivetrain, shooter, intake),
+      new AutoShootCommand(12557.83, 15327.57, 3.0, shooter, intake),
+
+      new ParallelRaceGroup(new StartTimer(3.5), new AutoTurn(-122.75, drivetrain)),
+
+      new IntakeDrive(50000, drivetrain, shooter, intake),
+      new AutoEncoderDrive(-30000, .6, drivetrain),
+
+      new ParallelRaceGroup(new AutoTurn(90, drivetrain), new StartTimer(3.5)),
+
+      new ParallelRaceGroup(new StartTimer(2),new LimelightCenterCommand(lime, drivetrain)),
+      new AlignLimeShot(lime, shooter, drivetrain)
     );
   }
 }

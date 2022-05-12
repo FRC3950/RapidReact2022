@@ -4,6 +4,8 @@
 
 package frc.robot.commands.teleop;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.misc.LedSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -21,6 +23,11 @@ public class AlignLimeShot extends CommandBase {
 
   private double speed;
 
+  private boolean isSecondBall;
+  private double kpLow = 0.025;
+  private double kpHigh = 0.015;
+  private double kp;
+
   public AlignLimeShot(LimelightSubsystem lime, ShooterSubsystem shooter, DrivetrainSubsystem drive) {
     this.lime = lime;
     this.drive = drive;
@@ -32,13 +39,34 @@ public class AlignLimeShot extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
+   
+
+    if(drive.getGear() == Value.kForward){
+      kp = kpHigh;
+    }else {
+      kp = kpLow;
+    }
+
+    //SmartDashboard.putNumber("kp", kp);
+
+
     targetspeedB = lime.getTargetVelocities()[0];
     targetspeedT = lime.getTargetVelocities()[1];
+
+    if(!shooter.getSensorValues()[0] && !shooter.getSensorValues()[1]){
+      isSecondBall = true; 
+    }
+    else {
+      isSecondBall = false;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    double kptest = SmartDashboard.getNumber("kp", kp);
     currentspeedB = Math.abs(shooter.getCurrentVelocities()[0]);
     currentSpeedT = Math.abs(shooter.getCurrentVelocities()[1]);
 
@@ -47,29 +75,31 @@ public class AlignLimeShot extends CommandBase {
       targetspeedT = lime.getTargetVelocities()[1];
     }
     
-    shooter.motorOn(-targetspeedB, -targetspeedT);
+    // shooter.motorOn(-targetspeedB, -targetspeedT);
 
-    if(lime.isWithinRange()){
-      if(currentspeedB >= targetspeedB - 550 && currentspeedB <= targetspeedB + 550 
-      && currentSpeedT >= targetspeedT - 550 && currentSpeedT <= targetspeedT + 550){
+    if(lime.isWithinRange() && lime.hasTarget()){
+
+      shooter.motorOn(-targetspeedB, -targetspeedT);
+
+      if(currentspeedB >= targetspeedB - 450 && currentspeedB <= targetspeedB + 250 
+      && currentSpeedT >= targetspeedT - 450 && currentSpeedT <= targetspeedT + 250){
         
         if(shooter.getSensorValues()[0] == true){
           shooter.setConveyor(0.7);
         }
-        
+
         shooter.setIndexer(0.5);
         LedSubsystem.setStrobe(0, 255, 0);
       }
     }
     else if(!lime.isWithinRange()){
       if(lime.hasTarget()){
-        if(lime.getHorizOffset() > -.50){
-          speed = lime.getHorizOffset() / 40;
+        if(lime.getHorizOffset() > -.62){
+          speed = lime.getHorizOffset() * kp;
           drive.turn(speed + .30);
-  
         }
-        else if(lime.getHorizOffset() < .50){
-          speed = lime.getHorizOffset() / 40;
+        else if(lime.getHorizOffset() < .60){
+          speed = lime.getHorizOffset() * kp;
           drive.turn(speed - .30); 
         }
       }
@@ -78,7 +108,12 @@ public class AlignLimeShot extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    shooter.motorOn(0, 0);
+    shooter.setConveyor(0);
+    shooter.setIndexer(0);
+    drive.turn(0);
+  }
 
   // Returns true when the command should end.
   @Override

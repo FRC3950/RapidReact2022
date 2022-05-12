@@ -12,7 +12,6 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class LimeShot extends CommandBase {
   private final LimelightSubsystem lime;
   private final ShooterSubsystem shooter;
-  private final IntakeSubsystem intake; 
 
   double currentspeedB, currentSpeedT;
   double targetspeedB, targetspeedT;
@@ -20,7 +19,6 @@ public class LimeShot extends CommandBase {
   public LimeShot(LimelightSubsystem lime, ShooterSubsystem shooter, IntakeSubsystem intake) {
     this.lime = lime;
     this.shooter = shooter;
-    this.intake = intake;
 
     addRequirements(lime, shooter, intake);
   }

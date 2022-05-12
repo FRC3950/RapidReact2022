@@ -70,7 +70,7 @@ public class LedSubsystem extends SubsystemBase {
       }
       else {
         led.animate(
-          new LarsonAnimation(111, 222, 33, 22, 0.9, 139, BounceMode.Front, 7)       // new RainbowAnimation(0.35, 0.3, ledCount)
+          new LarsonAnimation(28, 228, 178, 22, 0.9, 139, BounceMode.Front, 7)       // new RainbowAnimation(0.35, 0.3, ledCount)
         );
         // led.animate(new FireAnimation(0.5, 0.5, ledCount, 0.5, 0.2));
       }
