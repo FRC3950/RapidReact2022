@@ -106,6 +106,12 @@ public class RobotContainer {
     new JoystickButton(xboxController, XboxController.Button.kX.value)
       .whenPressed(climberSubsystem::toggleSolenoid);
 
+      new JoystickButton(xboxController, XboxController.Button.kLeftStick.value)
+      .whenPressed(drivetrain::playSong);
+
+      new JoystickButton(xboxController, XboxController.Button.kRightStick.value)
+      .whenPressed(drivetrain::stopSong);
+
    
     //Joystick buttons:
     new JoystickButton(drivestick, 6)

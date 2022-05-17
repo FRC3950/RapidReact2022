@@ -18,6 +18,10 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.*;
 
+import java.util.ArrayList;
+
+import com.ctre.phoenix.music.Orchestra;
+
 
 public class DrivetrainSubsystem extends SubsystemBase {
   /** Creates a new DrivetrainSubsystem. */
@@ -43,6 +47,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private boolean speedIsHalved = false;
   private boolean driveIsInverted = false;
 
+  Orchestra orchestra;
+
 
   public DrivetrainSubsystem() {
 
@@ -61,6 +67,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
     gyro.calibrate();
 
     solenoid.set(Value.kForward);
+
+    orchestra = new Orchestra();
+    orchestra.addInstrument(leftM);
+    orchestra.addInstrument(leftS);
+    orchestra.addInstrument(rightM);
+    orchestra.addInstrument(rightS);
+    orchestra.loadMusic("sandstorm.chrp");
 
   }
 
@@ -137,6 +150,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void restartTime(){ 
     time.reset(); 
     time.start();
+  }
+
+  public void playSong(){
+    orchestra.play();
+
+  }
+
+  public void stopSong(){
+    orchestra.stop();
   }
 
   //Josh was here
