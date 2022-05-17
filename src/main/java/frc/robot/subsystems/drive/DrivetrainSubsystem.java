@@ -28,6 +28,9 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.*;
 
 
+import com.ctre.phoenix.music.Orchestra;
+
+
 public class DrivetrainSubsystem extends SubsystemBase {
 
   //Gear Ratio
@@ -70,7 +73,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private boolean driveIsInverted = false;
   private boolean allowTurnInPlace = true;
 
-
+  Orchestra orchestra;
   /** Creates a new DrivetrainSubsystem. */
   public DrivetrainSubsystem() {
 
@@ -117,7 +120,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     resetHeadingEncoder();
 
-    
+  orchestra = new Orchestra();
+  orchestra.addInstrument(leftM);
+  orchestra.addInstrument(leftS);
+  orchestra.addInstrument(rightM);
+  orchestra.addInstrument(rightS);
+  orchestra.loadMusic("sandstorm.chrp");
 
   }
 
@@ -329,6 +337,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
   //Timer Getters & Restarts
   public double getTime(){ return time.get(); } 
   public void restartTime(){    time.reset();    time.start(); } 
+
+
+  public void playSong(){
+    orchestra.play();
+
+  }
+
+  public void stopSong(){
+    orchestra.stop();
+  }
+
 
   //Josh was here
 }
