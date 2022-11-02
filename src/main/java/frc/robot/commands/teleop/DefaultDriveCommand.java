@@ -6,7 +6,6 @@ package frc.robot.commands.teleop;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.*;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 
 import java.util.function.DoubleSupplier;
@@ -30,7 +29,7 @@ public class DefaultDriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drivetrain.teleDrive(-1.0 *x.getAsDouble(),  twist.getAsDouble());
+    drivetrain.teleDrive(-1.0 * x.getAsDouble(),  twist.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.

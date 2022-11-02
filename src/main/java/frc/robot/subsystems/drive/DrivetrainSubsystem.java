@@ -28,7 +28,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.*;
 
 
-import com.ctre.phoenix.music.Orchestra;
 
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -69,11 +68,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private double angle;
   private int direction = 1;
 
-  private boolean speedIsHalved = false;
-  private boolean driveIsInverted = false;
-  private boolean allowTurnInPlace = true;
 
-  Orchestra orchestra;
+
   /** Creates a new DrivetrainSubsystem. */
   public DrivetrainSubsystem() {
 
@@ -120,12 +116,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     resetHeadingEncoder();
 
-  orchestra = new Orchestra();
-  orchestra.addInstrument(leftM);
-  orchestra.addInstrument(leftS);
-  orchestra.addInstrument(rightM);
-  orchestra.addInstrument(rightS);
-  orchestra.loadMusic("sandstorm.chrp");
+
 
   }
 
@@ -164,11 +155,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       Odometry.nativeUnitsToDistanceMeters(getRightEncoderCount())
     );  //encoder count needs to be in meters 
 
-    SmartDashboard.putBoolean("DRIVE INVERTED (GREEN = TRUE)", driveIsInverted);
-    SmartDashboard.putBoolean("DRIVE SPEED HALVED (GREEN = TRUE)", speedIsHalved);
 
-    k_FilterX = SmartDashboard.getNumber("X-axis rate limit", 2.2);
-    k_FilterTwist = SmartDashboard.getNumber("Twist rate limit", 4);
 
   }
 
@@ -195,17 +182,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   public void teleDrive(double x, double y){
-    if(speedIsHalved){
-      m_drive.arcadeDrive(x * direction * .5, -y * direction * .5);
-    }
-    else {
+ 
+
       m_drive.arcadeDrive(filterX.calculate(x * direction), y * direction);
-    } 
+    
   }
 
-  public void curvatureDrive(double x, double y){
-    m_drive.curvatureDrive(x, y, allowTurnInPlace);
-  }
+ 
+  
 
   public void linearDrive(double speed){
     m_drive.arcadeDrive(speed, 0);
@@ -215,16 +199,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_drive.arcadeDrive(0, speed);
   }
 
-  public void toggleInvertDrive(){
 
-    direction *= -1;
-    driveIsInverted = !driveIsInverted;
 
-  }
 
-  public void toggleHalvedSpeed(){
-    speedIsHalved = !speedIsHalved;
-  }
 
   //Rotation2d.fromDegrees(gyro.getAngle()) This took forever to figure out!!!!
   /**
@@ -339,14 +316,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void restartTime(){    time.reset();    time.start(); } 
 
 
-  public void playSong(){
-    orchestra.play();
 
-  }
-
-  public void stopSong(){
-    orchestra.stop();
-  }
 
 
   //Josh was here
